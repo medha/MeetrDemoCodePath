@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hubdub.tutorials"
+    package="com.hubdub.meetr"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.hubdub.tutorials.activities.MainActivity"
+            android:name="com.hubdub.meetr.activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -28,12 +28,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hubdub.tutorials.activities.ComposeAcitivity"
+            android:name="com.hubdub.meetr.activities.ComposeAcitivity"
             android:label="@string/label_compose"
             android:theme="@style/AppBaseTheme" >
         </activity>
         <activity
-            android:name="com.hubdub.tutorials.activities.CameraActivity"
+            android:name="com.hubdub.meetr.activities.CameraActivity"
             android:label="@string/title_activity_camera" >
         </activity>
     </application>

@@ -1,4 +1,4 @@
-package com.hubdub.tutorials.activities;
+package com.hubdub.meetr.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ImageView;
 
-import com.hubdub.tutorials.R;
+import com.hubdub.meetr.R;
 
 public class CameraActivity extends Activity {
 

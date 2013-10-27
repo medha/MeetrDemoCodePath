@@ -1,11 +1,11 @@
-package com.hubdub.tutorials.activities;
+package com.hubdub.meetr.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.hubdub.tutorials.R;
+import com.hubdub.meetr.R;
 
 public class ComposeAcitivity extends Activity {
 	@Override

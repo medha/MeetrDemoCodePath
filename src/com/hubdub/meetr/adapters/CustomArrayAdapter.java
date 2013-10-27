@@ -1,8 +1,9 @@
-package com.hubdub.tutorials.adapters;
+package com.hubdub.meetr.adapters;
 
-import hubdub.tutorials.models.Event;
 
 import java.util.ArrayList;
+
+import com.hubdub.meetr.models.Event;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 public class CustomArrayAdapter extends ArrayAdapter<Event>{
 
 	public CustomArrayAdapter(Context context, ArrayList<Event> events) {
-		super(context, com.hubdub.tutorials.R.layout.event_list, events);
+		super(context, com.hubdub.meetr.R.layout.event_list, events);
 	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent){
@@ -22,12 +23,12 @@ public class CustomArrayAdapter extends ArrayAdapter<Event>{
 		Event event = getItem(position);
 		if(view == null){
 			LayoutInflater inflater = LayoutInflater.from(getContext());
-			view = inflater.inflate(com.hubdub.tutorials.R.layout.event_list, null);
+			view = inflater.inflate(com.hubdub.meetr.R.layout.event_list, null);
 		}
-		TextView tvEventName = (TextView) view.findViewById(com.hubdub.tutorials.R.id.eventName);
-		TextView tvEventDate = (TextView) view.findViewById(com.hubdub.tutorials.R.id.eventDate);
-		TextView tvEventTime= (TextView) view.findViewById(com.hubdub.tutorials.R.id.eventTime);
-		TextView tvEventMonth= (TextView) view.findViewById(com.hubdub.tutorials.R.id.eventMonth);
+		TextView tvEventName = (TextView) view.findViewById(com.hubdub.meetr.R.id.eventName);
+		TextView tvEventDate = (TextView) view.findViewById(com.hubdub.meetr.R.id.eventDate);
+		TextView tvEventTime= (TextView) view.findViewById(com.hubdub.meetr.R.id.eventTime);
+		TextView tvEventMonth= (TextView) view.findViewById(com.hubdub.meetr.R.id.eventMonth);
 		tvEventName.setText(event.getEventName());
 		tvEventDate.setText(event.getEventDate());
 		tvEventTime.setText(event.getEventTime());

@@ -1,4 +1,4 @@
-package hubdub.tutorials.models;
+package com.hubdub.meetr.models;
 
 
 public class Event {

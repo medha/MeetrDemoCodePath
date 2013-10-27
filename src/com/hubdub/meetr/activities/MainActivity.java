@@ -1,6 +1,5 @@
-package com.hubdub.tutorials.activities;
+package com.hubdub.meetr.activities;
 
-import hubdub.tutorials.models.Event;
 
 import java.util.ArrayList;
 
@@ -19,8 +18,9 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.hubdub.tutorials.R;
-import com.hubdub.tutorials.adapters.CustomArrayAdapter;
+import com.hubdub.meetr.R;
+import com.hubdub.meetr.adapters.CustomArrayAdapter;
+import com.hubdub.meetr.models.Event;
 
 public class MainActivity extends Activity {
 	@Override
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 		 */
 		ArrayList<Event> arrayOfEvents = addEvents();
 		CustomArrayAdapter adapter = new CustomArrayAdapter(this, arrayOfEvents);
-		ListView listView = (ListView) findViewById(com.hubdub.tutorials.R.id.lvItems);
+		ListView listView = (ListView) findViewById(com.hubdub.meetr.R.id.lvItems);
 
 		/*
 		 * Listeners for events on the listview. 
