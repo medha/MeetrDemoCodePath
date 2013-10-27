@@ -20,28 +20,35 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.hubdub.tutorials.R;
-import com.hubdub.tutorials.adapters.customArrayAdapter;
+import com.hubdub.tutorials.adapters.CustomArrayAdapter;
 
 public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		/*
+		 * Custom adapter serves up the Event feed for the current logged in
+		 * user
+		 */
 		ArrayList<Event> arrayOfEvents = addEvents();
-		customArrayAdapter adapter = new customArrayAdapter(this, arrayOfEvents);
+		CustomArrayAdapter adapter = new CustomArrayAdapter(this, arrayOfEvents);
 		ListView listView = (ListView) findViewById(com.hubdub.tutorials.R.id.lvItems);
-		
-		/* Listeners for events on the listview
-		 * Need to find a cleaner way of adding these listeners
+
+		/*
+		 * Listeners for events on the listview. 
+		 * TODO Need to find a cleaner way of adding these listeners
 		 */
 		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-		    @Override
-		    public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long rowId) {
-		    	Event event = (Event) adapter.getItemAtPosition(pos);
-		    	Log.d("debug-position", event.getEventName());
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapter, View item,
+					int pos, long rowId) {
+				Event event = (Event) adapter.getItemAtPosition(pos);
+				Log.d("debug-position", event.getEventName());
 				return false;
-		        // Do something here
-		    }
+				// Do something here
+			}
 		});
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -49,25 +56,28 @@ public class MainActivity extends Activity {
 					long rowId) {
 				// TODO Auto-generated method stub
 				Event event = (Event) adapter.getItemAtPosition(pos);
-		    	Log.d("debug-position-2", event.getEventName());
-				
+				Log.d("debug-position-2", event.getEventName());
+
 			}
 		});
 
 		listView.setAdapter(adapter);
 	}
-	
-	//Function to create the dummy data for testing
-	public static ArrayList <Event> addEvents(){
-		ArrayList <Event> events = new ArrayList<Event>();
-		for (int i=0; i<20; i++){
+
+	/* Function to create the dummy data for testing
+	 * TODO Remove this once we have the actual data hook up
+	 */
+	public static ArrayList<Event> addEvents() {
+		ArrayList<Event> events = new ArrayList<Event>();
+		for (int i = 0; i < 20; i++) {
 			events.add(new Event());
 		}
 		return events;
 	}
-	
+
 	/*
-	 * Menu related stuff goes here
+	 * Menu/Action bar related stuff goes here
+	 * 
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
 	@Override
@@ -76,40 +86,49 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item){
-		switch(item.getItemId()) {
-			case R.id.action_compose:
-				composeEvent();
-				return true;
-			case R.id.action_camera:
-				callCameraFragment();
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-		}		
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_compose:
+			composeEvent();
+			return true;
+		case R.id.action_camera:
+			callCameraFragment();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
-	
+
+	/*
+	 * Helper functions for Menu/Action bar
+	 */
 	public void composeEvent() {
-		Intent i = new Intent(this, composeActivity.class);
-		Toast toast = Toast.makeText(getApplicationContext(), "Create a new Event", Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-		toast.show();
-
+		Intent i = new Intent(this, ComposeAcitivity.class);
+		i.putExtra("dummyApiKey", "q1b2f3j4o5t6l1d2");
+		startActivity(i);
 	}
-	
-	public void callCameraFragment(){
+
+	public void callCameraFragment() {
+		Intent i = new Intent(this, CameraActivity.class);
+		startActivity(i);
 		
-		Toast toast = Toast.makeText(getApplicationContext(), "Add pictures", Toast.LENGTH_SHORT);
+		Toast toast = Toast.makeText(getApplicationContext(), "Add pictures",
+				Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 		toast.show();
-
+		
 	}
-	
+
+	/*
+	 * Handle the event when changing orientation triggers restart of activity
+	 * Read: http://
+	 * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
+	 */
 	@Override
-	public void onConfigurationChanged(Configuration newConfig){
-	    super.onConfigurationChanged(newConfig);
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
 	}
 
 }

@@ -1,6 +1,5 @@
 package hubdub.tutorials.models;
 
-import java.util.ArrayList;
 
 public class Event {
 	private static int eventCount;

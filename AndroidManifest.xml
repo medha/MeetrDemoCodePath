@@ -4,6 +4,10 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-feature 
+        android:name="android.hardware.camera" >
+    </uses-feature>
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
@@ -22,6 +26,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.hubdub.tutorials.activities.ComposeAcitivity"
+            android:label="@string/label_compose"
+            android:theme="@style/AppBaseTheme" >
+        </activity>
+        <activity
+            android:name="com.hubdub.tutorials.activities.CameraActivity"
+            android:label="@string/title_activity_camera" >
         </activity>
     </application>
 

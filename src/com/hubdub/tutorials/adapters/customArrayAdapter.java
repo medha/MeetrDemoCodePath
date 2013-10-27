@@ -5,16 +5,15 @@ import hubdub.tutorials.models.Event;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class customArrayAdapter extends ArrayAdapter<Event>{
+public class CustomArrayAdapter extends ArrayAdapter<Event>{
 
-	public customArrayAdapter(Context context, ArrayList<Event> events) {
+	public CustomArrayAdapter(Context context, ArrayList<Event> events) {
 		super(context, com.hubdub.tutorials.R.layout.event_list, events);
 	}
 	@Override
