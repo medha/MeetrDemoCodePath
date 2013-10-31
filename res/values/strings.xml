@@ -25,5 +25,16 @@
 	<!-- Login related values -->
 	<string name="app_id">405238759538027</string>
     <string name="loginfacebook">Login using Facebook</string>
-
+	<string name="placesActivity">Select Places</string>
+	
+	<!--  Event creation strings -->
+	<string name="menu_addevent">Add Event</string>
+	<string name="eventNameHint">Event Name</string>
+	<string name="createEvent">Create</string>
+	<string name="dateHint">mm-dd-yyyy</string>
+	<string name="pick_time">Pick time</string>
+	<string name="timeHint">hh:mm</string>
+	
+	
+	
 </resources>

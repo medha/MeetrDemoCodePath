@@ -1,39 +1,59 @@
 package com.hubdub.meetr.adapters;
 
-
-import java.util.ArrayList;
-
-import com.hubdub.meetr.models.Event;
+import java.util.Date;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class CustomArrayAdapter extends ArrayAdapter<Event>{
+import com.hubdub.meetr.models.Events;
+import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
+import com.parse.ParseUser;
 
-	public CustomArrayAdapter(Context context, ArrayList<Event> events) {
-		super(context, com.hubdub.meetr.R.layout.event_list, events);
+public class CustomArrayAdapter extends ParseQueryAdapter<Events> {
+
+	public CustomArrayAdapter(Context context) {
+		super(context, new ParseQueryAdapter.QueryFactory<Events>() {
+			public ParseQuery<Events> create() {
+				// Here we can configure a ParseQuery to our heart's desire.
+				ParseQuery<Events> query = new ParseQuery<Events>("Events");
+				query.whereEqualTo("User", ParseUser.getCurrentUser());
+				query.orderByDescending("EventDate");
+				return query;
+			}
+		});
 	}
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent){
-		View view = convertView;
-		Event event = getItem(position);
-		if(view == null){
-			LayoutInflater inflater = LayoutInflater.from(getContext());
-			view = inflater.inflate(com.hubdub.meetr.R.layout.event_list, null);
+	public View getItemView(Events event, View view, ViewGroup parent) {
+		if (view == null) {
+			view = View.inflate(getContext(),
+					com.hubdub.meetr.R.layout.event_list, null);
 		}
-		TextView tvEventName = (TextView) view.findViewById(com.hubdub.meetr.R.id.eventName);
-		TextView tvEventDate = (TextView) view.findViewById(com.hubdub.meetr.R.id.eventDate);
-		TextView tvEventTime= (TextView) view.findViewById(com.hubdub.meetr.R.id.eventTime);
-		TextView tvEventMonth= (TextView) view.findViewById(com.hubdub.meetr.R.id.eventMonth);
-		tvEventName.setText(event.getEventName());
-		tvEventDate.setText(event.getEventDate());
-		tvEventTime.setText(event.getEventTime());
+
+		super.getItemView(event, view, parent);
+
+		// Do additional configuration before returning the View.
+		TextView tvEventName = (TextView) view
+				.findViewById(com.hubdub.meetr.R.id.eventName);
+		TextView tvEventDate = (TextView) view
+				.findViewById(com.hubdub.meetr.R.id.eventDate);
+		TextView tvEventTime = (TextView) view
+				.findViewById(com.hubdub.meetr.R.id.eventTime);
+		TextView tvEventMonth = (TextView) view
+				.findViewById(com.hubdub.meetr.R.id.eventMonth);
+		tvEventName.setText(event.getString("EventName"));
+		/* TODO fix this so the date and time show properly */
+		tvEventDate.setText(String
+				.valueOf(event.getDate("EventDate").getDate()));
+		Date newDate = event.getDate("EventTime");
+		String time = String.valueOf(newDate.getHours()) + ":"
+				+ String.valueOf(newDate.getMinutes());
+		tvEventTime.setText(time);
 		tvEventMonth.setText("Nov");
 		return view;
 	}
-	
+
 }

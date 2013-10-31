@@ -1,8 +1,5 @@
 package com.hubdub.meetr.activities;
 
-
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,9 +17,15 @@ import android.widget.Toast;
 
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
-import com.hubdub.meetr.models.Event;
+import com.hubdub.meetr.models.Events;
+import com.parse.ParseObject;
 
 public class MainActivity extends Activity {
+
+	private static final int REQUEST_CODE = 1;
+	private CustomArrayAdapter adapter;
+	private ListView listView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,19 +35,20 @@ public class MainActivity extends Activity {
 		 * Custom adapter serves up the Event feed for the current logged in
 		 * user
 		 */
-		ArrayList<Event> arrayOfEvents = addEvents();
-		CustomArrayAdapter adapter = new CustomArrayAdapter(this, arrayOfEvents);
-		ListView listView = (ListView) findViewById(com.hubdub.meetr.R.id.lvItems);
+		ParseObject.registerSubclass(Events.class);
+		adapter = new CustomArrayAdapter(this);
+		listView = (ListView) findViewById(R.id.lvItems);
+		listView.setAdapter(adapter);
 
 		/*
-		 * Listeners for events on the listview. 
-		 * TODO Need to find a cleaner way of adding these listeners
+		 * Listeners for events on the listview. TODO Need to find a cleaner way
+		 * of adding these listeners
 		 */
 		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View item,
 					int pos, long rowId) {
-				Event event = (Event) adapter.getItemAtPosition(pos);
+				Events event = (Events) adapter.getItemAtPosition(pos);
 				Log.d("debug-position", event.getEventName());
 				return false;
 				// Do something here
@@ -55,7 +59,7 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> adapter, View item, int pos,
 					long rowId) {
 				// TODO Auto-generated method stub
-				Event event = (Event) adapter.getItemAtPosition(pos);
+				Events event = (Events) adapter.getItemAtPosition(pos);
 				Log.d("debug-position-2", event.getEventName());
 
 			}
@@ -64,16 +68,33 @@ public class MainActivity extends Activity {
 		listView.setAdapter(adapter);
 	}
 
-	/* Function to create the dummy data for testing
-	 * TODO Remove this once we have the actual data hook up
+	/*
+	 * Function to create the dummy data for testing TODO Remove this once we
+	 * have the actual data hook up
 	 */
-	public static ArrayList<Event> addEvents() {
-		ArrayList<Event> events = new ArrayList<Event>();
-		for (int i = 0; i < 20; i++) {
-			events.add(new Event());
-		}
-		return events;
-	}
+	// public static ArrayList<Events> addEvents() {
+	// ArrayList<Events> events = new ArrayList<Events>();
+	//
+	// /* 1. Form the query string
+	// * 2. Send the query to parse
+	// * 3. array of eventItems = (?) Response of Query
+	// */
+	// ParseQuery<ParseObject> query = ParseQuery.getQuery("Events");
+	// query.whereEqualTo("User", ParseUser.getCurrentUser());
+	// query.findInBackground(new FindCallback<ParseObject>() {
+	// public void done(List<ParseObject> eventList, ParseException e) {
+	// if (e == null) {
+	// Log.d("Events", "Retrieved " + eventList.size() + " events");
+	// } else {
+	// Log.d("Events", "Error: " + e.getMessage());
+	// }
+	// }
+	//
+	// });
+	//
+	// events.add(new Events());
+	// return events;
+	// }
 
 	/*
 	 * Menu/Action bar related stuff goes here
@@ -105,26 +126,37 @@ public class MainActivity extends Activity {
 	 * Helper functions for Menu/Action bar
 	 */
 	public void composeEvent() {
-		Intent i = new Intent(this, ComposeAcitivity.class);
+		Intent i = new Intent(this, ComposeActivity.class);
 		i.putExtra("dummyApiKey", "q1b2f3j4o5t6l1d2");
-		startActivity(i);
+		startActivityForResult(i, REQUEST_CODE);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+			adapter.loadObjects();
+			listView.setAdapter(adapter);
+		}
 	}
 
 	public void callCameraFragment() {
 		Intent i = new Intent(this, CameraActivity.class);
 		startActivity(i);
-		
+
 		Toast toast = Toast.makeText(getApplicationContext(), "Add pictures",
 				Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 		toast.show();
-		
+
 	}
 
 	/*
 	 * Handle the event when changing orientation triggers restart of activity
 	 * Read: http://
-	 * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
+	 * 
+	 * @see
+	 * android.app.Activity#onConfigurationChanged(android.content.res.Configuration
+	 * )
 	 */
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
