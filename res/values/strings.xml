@@ -34,6 +34,7 @@
 	<string name="dateHint">mm-dd-yyyy</string>
 	<string name="pick_time">Pick time</string>
 	<string name="timeHint">hh:mm</string>
+	<string name="event_description_body">Event details go here</string>
 	
 	
 	
