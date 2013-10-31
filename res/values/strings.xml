@@ -24,7 +24,8 @@
     
 	<!-- Login related values -->
 	<string name="app_id">405238759538027</string>
-    <string name="loginfacebook">Login using Facebook</string>
+    <string name="loginfacebook">Meetr</string>
+     <string name="loginwithfacebook">Log in with Facebook</string>
 	<string name="placesActivity">Select Places</string>
 	
 	<!--  Event creation strings -->

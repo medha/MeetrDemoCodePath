@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,12 +31,6 @@ public class ComposeActivity extends FragmentActivity implements
 	private EditText mEventNameInput;
 	private Date eventDate;
 	private Date eventTime;
-	private DatePicker dpResult;
-	private TextView tvDisplayDate;
-	private Button btnChangeDate;
-	private int year;
-	private int month;
-	private int day;
 	static final int DATE_DIALOG_ID = 999;
 
 	@Override
@@ -52,7 +45,7 @@ public class ComposeActivity extends FragmentActivity implements
 		mEventNameInput = (EditText) findViewById(R.id.eventName);
 	}
 
-	public void createEvent(View v) {
+	public void onEventCreateAction(View v) {
 		if (mEventNameInput.getText().length() > 0) {
 			Events event = new Events();
 			ParseUser currentUser = ParseUser.getCurrentUser();
@@ -61,10 +54,17 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setEventTime(eventTime);
 			event.setCurrentUser(currentUser);
 			event.saveEventually();
+			// Instead of going back to the EventListActivity, we are going to
+			// start a new activity that shows the newly created event
+			Intent i = new Intent(ComposeActivity.this, EventDetailActivity.class);
+			Bundle extras = new Bundle();
+			extras.putString("EventName", mEventNameInput.getText().toString());
+			extras.putString("EventDate", eventDate.toString());
+			extras.putString("EventTime", eventTime.toString());
+			i.putExtras(extras);
+			startActivity(i);
 			// Need to close this activity and head back out.
-			mEventNameInput.setText("");
-			setResult(RESULT_OK);
-			finish();
+						mEventNameInput.setText("");
 		}
 	}
 
@@ -78,6 +78,14 @@ public class ComposeActivity extends FragmentActivity implements
 		newFragment.show(getSupportFragmentManager(), "timePicker");
 	}
 
+	/**
+	 * //This is how you convert time from parse to local time
+	 * SimpleDateFormat formatter = new
+	 * SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); String parseDate =
+	 * formatter.format(mEventDate.getTime());
+	 * System.out.println(mEventDate.getTime());
+	 * System.out.println(parseDate);
+	 **/
 	@Override
 	public void onDateSet(DatePicker view, int year, int monthOfYear,
 			int dayOfMonth) {
@@ -90,16 +98,6 @@ public class ComposeActivity extends FragmentActivity implements
 		GregorianCalendar mEventDate = new GregorianCalendar(year, monthOfYear,
 				dayOfMonth);
 		eventDate = mEventDate.getTime();
-
-		/**
-		 * //This is how you convert time from parse to local time
-		 * SimpleDateFormat formatter = new
-		 * SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); String parseDate =
-		 * formatter.format(mEventDate.getTime());
-		 * System.out.println(mEventDate.getTime());
-		 * System.out.println(parseDate);
-		 **/
-
 	}
 
 	@Override

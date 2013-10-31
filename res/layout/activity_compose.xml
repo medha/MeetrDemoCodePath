@@ -50,7 +50,7 @@
         android:id="@+id/createEventButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="createEvent"
+        android:onClick="onEventCreateAction"
         android:text="@string/createEvent" />
 
     
