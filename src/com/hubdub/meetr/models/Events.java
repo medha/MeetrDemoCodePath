@@ -2,6 +2,8 @@ package com.hubdub.meetr.models;
 
 import java.util.Date;
 
+import org.json.JSONArray;
+
 import android.graphics.Bitmap;
 
 import com.parse.ParseClassName;
@@ -60,6 +62,14 @@ public class Events extends ParseObject {
 	public String getVenue() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public JSONArray getGuestList() {
+		return getJSONArray("GuestList");
+	}
+	
+	public void setGuestList(JSONArray guestList) {
+		put("GuestList", guestList);
 	}
 
 }

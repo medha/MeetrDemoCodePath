@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.json.JSONArray;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
@@ -45,6 +47,8 @@ public class ComposeActivity extends FragmentActivity implements
     private TextView resultsTextView;
     private static final int PICK_FRIENDS_ACTIVITY = 1;
 	static final int DATE_DIALOG_ID = 999;
+	private JSONArray guestListArray = new JSONArray();
+	private String results = new String();   
 	
 
 	@Override
@@ -107,12 +111,12 @@ public class ComposeActivity extends FragmentActivity implements
 	}
 	
 	private void displaySelectedFriends(int resultCode) {
-		String results = "";
-        MeetrApplication application = (MeetrApplication) getApplication();
+		MeetrApplication application = (MeetrApplication) getApplication();
 		Collection<GraphUser> selection = application.getSelectedUsers();
 		if (selection != null && selection.size() > 0) {
 			ArrayList<String> names = new ArrayList<String>();
 			for (GraphUser user : selection) {
+				guestListArray.put(user);
 				names.add(user.getName());
 			}
 			results = TextUtils.join(", ", names);
@@ -153,9 +157,6 @@ public class ComposeActivity extends FragmentActivity implements
 	   
 	    private void startPickFriendsActivity() {
 	        if (ensureOpenSession()) {
-	        	MeetrApplication application = (MeetrApplication) getApplication();
-	    		application.setSelectedUsers(null);
-
 	            Intent intent = new Intent(this, PickFriendsActivity.class);
 	            // Note: The following line is optional, as multi-select behavior is the default for
 	            // FriendPickerFragment. It is here to demonstrate how parameters could be passed to the
@@ -176,6 +177,7 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setEventDate(eventDate);
 			event.setEventTime(eventTime);
 			event.setCurrentUser(currentUser);
+			event.setGuestList(guestListArray);
 			event.saveEventually();
 			// Instead of going back to the EventListActivity, we are going to
 			// start a new activity that shows the newly created event
@@ -184,7 +186,9 @@ public class ComposeActivity extends FragmentActivity implements
 			extras.putString("EventName", mEventNameInput.getText().toString());
 			extras.putString("EventDate", eventDate.toString());
 			extras.putString("EventTime", eventTime.toString());
+			extras.putString("GuestList", results);
 			i.putExtras(extras);
+			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 			startActivity(i);
 			// Need to close this activity and head back out.
 						mEventNameInput.setText("");
