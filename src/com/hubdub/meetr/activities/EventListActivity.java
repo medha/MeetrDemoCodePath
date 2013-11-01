@@ -20,7 +20,7 @@ import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
 import com.parse.ParseObject;
 
-public class MainActivity extends Activity {
+public class EventListActivity extends Activity {
 
 	private static final int REQUEST_CODE = 1;
 	private CustomArrayAdapter adapter;

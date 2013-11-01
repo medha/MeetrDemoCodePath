@@ -2,6 +2,8 @@ package com.hubdub.meetr.models;
 
 import java.util.Date;
 
+import android.graphics.Bitmap;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -38,6 +40,26 @@ public class Events extends ParseObject {
 
 	public void setCurrentUser(ParseUser currentUser) {
 		put("User", currentUser);
+	}
+
+	public String getRsvp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Bitmap getEventImageUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getVenue() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

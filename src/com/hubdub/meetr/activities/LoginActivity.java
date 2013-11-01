@@ -92,7 +92,7 @@ public class LoginActivity extends Activity {
 	}
 
 	private void showUserDetailsActivity() {
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, EventListActivity.class);
 		startActivity(intent);
 	}
 }
