@@ -18,6 +18,7 @@
     <string name="label_eventTime">Event Time</string>
     <string name="label_eventMonth">Event Month</string>
     <string name="label_compose">Create Event</string>
+    <string name="label_pickFriends">Add Friends</string>
     
     <!-- Toast texts -->
     <string name="toast_camera">Add pictures to your events..</string>
@@ -34,7 +35,8 @@
 	<string name="dateHint">mm-dd-yyyy</string>
 	<string name="pick_time">Pick time</string>
 	<string name="timeHint">hh:mm</string>
-	
+	<string name="exception">Exception: %1$s</string>
+    <string name="ok_button">OK</string>
 	
 	
 </resources>

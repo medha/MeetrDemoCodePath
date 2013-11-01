@@ -130,10 +130,10 @@ public class MainActivity extends Activity {
 		i.putExtra("dummyApiKey", "q1b2f3j4o5t6l1d2");
 		startActivityForResult(i, REQUEST_CODE);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 			adapter.loadObjects();
 			listView.setAdapter(adapter);
 		}
