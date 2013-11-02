@@ -20,10 +20,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.facebook.FacebookException;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
+import com.facebook.widget.PickerFragment.OnDoneButtonClickedListener;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.models.Events;
 import com.parse.ParseObject;
@@ -39,10 +42,11 @@ public class PickFriendsActivity extends FragmentActivity {
     // A helper to simplify life for callers who want to populate a Bundle with the necessary
     // parameters. A more sophisticated Activity might define its own set of parameters; our needs
     // are simple, so we just populate what we want to pass to the FriendPickerFragment.
-    public static void populateParameters(Intent intent, String userId, boolean multiSelect, boolean showTitleBar) {
+    public static void populateParameters(Intent intent, String userId, boolean multiSelect, boolean showTitleBar, String selectedString) {
         intent.putExtra(FriendPickerFragment.USER_ID_BUNDLE_KEY, userId);
         intent.putExtra(FriendPickerFragment.MULTI_SELECT_BUNDLE_KEY, multiSelect);
         intent.putExtra(FriendPickerFragment.SHOW_TITLE_BAR_BUNDLE_KEY, showTitleBar);
+        intent.putExtra(FriendPickerFragment.SELECTION_BUNDLE_KEY, selectedString);
     }
 
     @Override
@@ -74,17 +78,45 @@ public class PickFriendsActivity extends FragmentActivity {
             }
         });
 
-        friendPickerFragment.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
-            @Override
-            public void onDoneButtonClicked(PickerFragment<?> fragment) {
-                // We just store our selection in the Application for other activities to look at.
-            	MeetrApplication application = (MeetrApplication) getApplication();
-                application.setSelectedUsers(friendPickerFragment.getSelection());
-                setResult(RESULT_OK, null);
-                finish();
-            }
-        });
+//        friendPickerFragment.setOnDoneButtonClickedListener(new PickerFragment.OnDoneButtonClickedListener() {
+//            @Override
+//            public void onDoneButtonClicked(PickerFragment<?> fragment) {
+//                // We just store our selection in the Application for other activities to look at.
+//            	MeetrApplication application = (MeetrApplication) getApplication();
+//                application.setSelectedUsers(friendPickerFragment.getSelection());
+//                setResult(RESULT_OK, null);
+//                finish();
+//            }
+//        });
+        
     }
+    
+    public void onDoneButtonClicked(FragmentActivity pickFriendsActivity) {
+        // We just store our selection in the Application for other activities to look at.
+    	MeetrApplication application = (MeetrApplication) getApplication();
+        application.setSelectedUsers(friendPickerFragment.getSelection());
+        setResult(RESULT_OK, null);
+        finish();
+    }
+    
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.friendpicker, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_done:
+			onDoneButtonClicked(this);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
 
     private void onError(Exception error) {
         String text = getString(R.string.exception, error.getMessage());

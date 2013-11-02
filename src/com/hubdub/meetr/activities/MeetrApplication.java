@@ -16,16 +16,5 @@ public class MeetrApplication extends Application {
 	    }
 	    public void setSelectedUsers(Collection<GraphUser> selectedUsers) {
 	    	this.selectedUsers = selectedUsers;
-//			if(this.selectedUsers == null) {
-//				this.selectedUsers.addAll(selectedUsers);
-//			} else {
-//				for(GraphUser o: selectedUsers) {
-//					for(GraphUser oo: this.selectedUsers) {
-//						if(!(o.getId().equals(oo.getId()))){
-//							this.selectedUsers.add(o);
-//						}
-//					}
-//				}
-//			}
 	    }
 }

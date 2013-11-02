@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -46,100 +47,8 @@ public class EventListActivity extends Activity {
 		ParseObject.registerSubclass(Events.class);
 		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
-	
-		adapter = new CustomArrayAdapter(this);
-		listView = (ListView) findViewById(R.id.lvItems);
-		listView.setAdapter(adapter);
-
-		/*
-		 * Listeners for events on the listview. TODO Need to find a cleaner way
-		 * of adding these listeners
-		 */
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> adapter, View item,
-					int pos, long rowId) {
-				Events event = (Events) adapter.getItemAtPosition(pos);
-				Log.d("debug-position", event.getEventName());
-				return false;
-				// Do something here
-			}
-		});
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View item, int pos,
-					long rowId) {
-				// TODO Auto-generated method stub
-				Events event = (Events) adapter.getItemAtPosition(pos);
-				Log.d("debug-position-2", event.getEventName());
-				Intent i = new Intent(EventListActivity.this, EventDetailActivity.class);
-				Bundle extras = new Bundle();
-				extras.putString("EventName", event.getEventName());
-				extras.putString("EventDate", event.getEventDate().toString());
-				extras.putString("EventTime", event.getEventTime().toString());
-				
-				JSONArray guestList = new JSONArray();
-				guestList = event.getGuestList();
-				String results = "";
-				/* This needs to be made into a function
-				 * 
-				 */
-				if (guestList != null && guestList.length() > 0) {
-					ArrayList<String> names = new ArrayList<String>();
-					for (int j = 0; j < guestList.length(); j++) {
-						  GraphUser user = null;
-						try {
-							user = (GraphUser)guestList.getJSONObject(j);
-							names.add(user.getName());
-							Log.d("output", names.toString());
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if(user != null)
-							names.add(user.getName());
-					}
-					results = TextUtils.join(", ", names);
-				} else {
-					results = "<No friends selected>";
-				}
-				extras.putString("GuestList", results);
-				i.putExtras(extras);
-				startActivity(i);
-
-			}
-		});
-
-		listView.setAdapter(adapter);
+		loadData();
 	}
-
-	/*
-	 * Function to create the dummy data for testing TODO Remove this once we
-	 * have the actual data hook up
-	 */
-	// public static ArrayList<Events> addEvents() {
-	// ArrayList<Events> events = new ArrayList<Events>();
-	//
-	// /* 1. Form the query string
-	// * 2. Send the query to parse
-	// * 3. array of eventItems = (?) Response of Query
-	// */
-	// ParseQuery<ParseObject> query = ParseQuery.getQuery("Events");
-	// query.whereEqualTo("User", ParseUser.getCurrentUser());
-	// query.findInBackground(new FindCallback<ParseObject>() {
-	// public void done(List<ParseObject> eventList, ParseException e) {
-	// if (e == null) {
-	// Log.d("Events", "Retrieved " + eventList.size() + " events");
-	// } else {
-	// Log.d("Events", "Error: " + e.getMessage());
-	// }
-	// }
-	//
-	// });
-	//
-	// events.add(new Events());
-	// return events;
-	// }
 
 	/*
 	 * Menu/Action bar related stuff goes here
@@ -166,10 +75,80 @@ public class EventListActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		listView.setAdapter(new CustomArrayAdapter(this));
+	}
+	
+	/*
+	 * Functon to Load data into the listview
+	 */
+	public void loadData(){
+		adapter = new CustomArrayAdapter(this);
+		listView = (ListView) findViewById(R.id.lvItems);
+		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapter, View item,
+					int pos, long rowId) {
+				//Events event = (Events) adapter.getItemAtPosition(pos);
+				return false;
+			}
+		});
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View item, int pos,
+					long rowId) {
+				Events event = (Events) adapter.getItemAtPosition(pos);
+				JSONArray guestList = event.getGuestList();				
+
+				Bundle extras = new Bundle();
+				extras.putString("EventName", event.getEventName());
+				extras.putString("EventDate", event.getEventDate().toString());
+				extras.putString("EventTime", event.getEventTime().toString());				
+				extras.putString("GuestList", getStrGuestList(guestList));
+
+				Intent i = new Intent(EventListActivity.this, EventDetailActivity.class);
+				i.putExtras(extras);
+				startActivity(i);
+			}
+		});
+
+		listView.setAdapter(adapter);
+	}
+
+	
+	/*
+	 * Helper Function for the adapter
+	 */
+	public String getStrGuestList(JSONArray guestList){
+		JSONObject childJSONObject;
+		ArrayList<String> names = new ArrayList<String>();
+		String results = "";
+		if (guestList != null && guestList.length() > 0) {
+			for (int j = 0; j < guestList.length(); j++) {
+				try {
+					childJSONObject = guestList.getJSONObject(j);
+					names.add(childJSONObject.getString("name"));
+					Log.d("output", names.toString());
+				} catch (JSONException e1) {
+					e1.printStackTrace();
+				}
+			}
+			results = TextUtils.join(", ", names);
+		}		
+		return results;
+	}
+	
 
 	/*
 	 * Helper functions for Menu/Action bar
 	 */
+	
 	public void composeEvent() {
 		Intent i = new Intent(this, ComposeActivity.class);
 		i.putExtra("dummyApiKey", "q1b2f3j4o5t6l1d2");

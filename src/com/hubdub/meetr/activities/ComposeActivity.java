@@ -44,12 +44,12 @@ public class ComposeActivity extends FragmentActivity implements
 	private UiLifecycleHelper lifecycleHelper;
 	boolean pickFriendsWhenSessionOpened;
 	private Button pickFriendsButton;
-    private TextView resultsTextView;
-    private static final int PICK_FRIENDS_ACTIVITY = 1;
+	private TextView resultsTextView;
+	private static final int PICK_FRIENDS_ACTIVITY = 1;
 	static final int DATE_DIALOG_ID = 999;
 	private JSONArray guestListArray = new JSONArray();
-	private String results = new String();   
-	
+	private String results = new String();
+	private String selectedString = new String();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +86,10 @@ public class ComposeActivity extends FragmentActivity implements
 
 		ensureOpenSession();
 	}
-	
-	/* show the friends selected by the friend picker
-	 * (non-Javadoc)
+
+	/*
+	 * show the friends selected by the friend picker (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.FragmentActivity#onStart()
 	 */
 	protected void onStart() {
@@ -109,89 +110,130 @@ public class ComposeActivity extends FragmentActivity implements
 			break;
 		}
 	}
-	
+
 	private void displaySelectedFriends(int resultCode) {
+		/*
+		 * get the global application context to save the results from facebook
+		 * friend picker.
+		 */
 		MeetrApplication application = (MeetrApplication) getApplication();
 		Collection<GraphUser> selection = application.getSelectedUsers();
+
 		if (selection != null && selection.size() > 0) {
 			ArrayList<String> names = new ArrayList<String>();
+			ArrayList<String> selectedStr = new ArrayList<String>();
+			
 			for (GraphUser user : selection) {
-				guestListArray.put(user);
 				names.add(user.getName());
+				selectedStr.add(user.getId());
 			}
 			results = TextUtils.join(", ", names);
+			selectedString = TextUtils.join(", ", selectedStr);
 		} else {
 			results = "<No friends selected>";
 		}
-
 		resultsTextView.setText(results);
 	}
 	
-	/* Re-use open session to facebook for the friend picker
-	 * Better utilization of the already open session. 
+	private void addSelectedFriends() {
+		/*
+		 * get the global application context to save the results from facebook
+		 * friend picker.
+		 */
+		MeetrApplication application = (MeetrApplication) getApplication();
+		Collection<GraphUser> selection = application.getSelectedUsers();
+
+		if (selection != null && selection.size() > 0) {
+			for (GraphUser user : selection) {
+				guestListArray.put(user.getInnerJSONObject());
+			}
+		}
+	}
+
+
+	/*
+	 * Re-use open session to facebook for the friend picker Better utilization
+	 * of the already open session.
 	 */
 	private boolean ensureOpenSession() {
-        if (Session.getActiveSession() == null ||
-                !Session.getActiveSession().isOpened()) {
-            Session.openActiveSession(this, true, new Session.StatusCallback() {
-                @Override
-                public void call(Session session, SessionState state, Exception exception) {
-                    onSessionStateChanged(session, state, exception);
-                }
-            });
-            return false;
-        }
-        return true;
-    }
-	
-	  private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
-	        if (pickFriendsWhenSessionOpened && state.isOpened()) {
-	            pickFriendsWhenSessionOpened = false;
-	            startPickFriendsActivity();
-	        }
-	    }
-	  
-	   private void onClickPickFriends() {
-	        startPickFriendsActivity();
-	    }
-	   
-	    private void startPickFriendsActivity() {
-	        if (ensureOpenSession()) {
-	            Intent intent = new Intent(this, PickFriendsActivity.class);
-	            // Note: The following line is optional, as multi-select behavior is the default for
-	            // FriendPickerFragment. It is here to demonstrate how parameters could be passed to the
-	            // friend picker if single-select functionality was desired, or if a different user ID was
-	            // desired (for instance, to see friends of a friend).
-	            PickFriendsActivity.populateParameters(intent, null, true, true);
-	            startActivityForResult(intent, PICK_FRIENDS_ACTIVITY);
-	        } else {
-	            pickFriendsWhenSessionOpened = true;
-	        }
-	    }
+		if (Session.getActiveSession() == null
+				|| !Session.getActiveSession().isOpened()) {
+			Session.openActiveSession(this, true, new Session.StatusCallback() {
+				@Override
+				public void call(Session session, SessionState state,
+						Exception exception) {
+					onSessionStateChanged(session, state, exception);
+				}
+			});
+			return false;
+		}
+		return true;
+	}
+
+	private void onSessionStateChanged(Session session, SessionState state,
+			Exception exception) {
+		if (pickFriendsWhenSessionOpened && state.isOpened()) {
+			pickFriendsWhenSessionOpened = false;
+			startPickFriendsActivity();
+		}
+	}
+
+	private void onClickPickFriends() {
+		startPickFriendsActivity();
+	}
+
+	private void startPickFriendsActivity() {
+		if (ensureOpenSession()) {
+			Intent intent = new Intent(this, PickFriendsActivity.class);
+			// Note: The following line is optional, as multi-select behavior is
+			// the default for
+			// FriendPickerFragment. It is here to demonstrate how parameters
+			// could be passed to the
+			// friend picker if single-select functionality was desired, or if a
+			// different user ID was
+			// desired (for instance, to see friends of a friend).
+			PickFriendsActivity.populateParameters(intent, null, true, false, selectedString);
+			startActivityForResult(intent, PICK_FRIENDS_ACTIVITY);
+		} else {
+			pickFriendsWhenSessionOpened = true;
+		}
+	}
 
 	public void onEventCreateAction(View v) {
 		if (mEventNameInput.getText().length() > 0) {
 			Events event = new Events();
 			ParseUser currentUser = ParseUser.getCurrentUser();
+			
 			event.setEventName(mEventNameInput.getText().toString());
 			event.setEventDate(eventDate);
 			event.setEventTime(eventTime);
-			event.setCurrentUser(currentUser);
+			addSelectedFriends();
 			event.setGuestList(guestListArray);
+			event.setCurrentUser(currentUser);
 			event.saveEventually();
+			
 			// Instead of going back to the EventListActivity, we are going to
 			// start a new activity that shows the newly created event
-			Intent i = new Intent(ComposeActivity.this, EventDetailActivity.class);
+			Intent i = new Intent(ComposeActivity.this,
+					EventDetailActivity.class);
+			
+			// Additional information being sent across
 			Bundle extras = new Bundle();
 			extras.putString("EventName", mEventNameInput.getText().toString());
 			extras.putString("EventDate", eventDate.toString());
 			extras.putString("EventTime", eventTime.toString());
 			extras.putString("GuestList", results);
+			
 			i.putExtras(extras);
 			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+			
 			startActivity(i);
 			// Need to close this activity and head back out.
-						mEventNameInput.setText("");
+			mEventNameInput.setText("");
+			/* reset the global variable */
+			MeetrApplication application = (MeetrApplication) getApplication();
+			application.setSelectedUsers(null);
+			finish();
 		}
 	}
 
@@ -206,12 +248,10 @@ public class ComposeActivity extends FragmentActivity implements
 	}
 
 	/**
-	 * //This is how you convert time from parse to local time
-	 * SimpleDateFormat formatter = new
-	 * SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); String parseDate =
-	 * formatter.format(mEventDate.getTime());
-	 * System.out.println(mEventDate.getTime());
-	 * System.out.println(parseDate);
+	 * //This is how you convert time from parse to local time SimpleDateFormat
+	 * formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); String
+	 * parseDate = formatter.format(mEventDate.getTime());
+	 * System.out.println(mEventDate.getTime()); System.out.println(parseDate);
 	 **/
 	@Override
 	public void onDateSet(DatePicker view, int year, int monthOfYear,
