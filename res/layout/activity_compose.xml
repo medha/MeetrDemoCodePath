@@ -52,6 +52,19 @@
         android:layout_height="wrap_content"
         android:onClick="onEventCreateAction"
         android:text="@string/createEvent" />
+    
+     <Button
+            android:id="@+id/pickFriendsButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Pick Friends"
+            />
+     s
+     <TextView
+            android:id="@+id/resultsTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
 
     
 </LinearLayout>

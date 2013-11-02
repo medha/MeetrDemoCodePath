@@ -1,8 +1,12 @@
 package com.hubdub.meetr.activities;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import org.json.JSONArray;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -10,13 +14,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.activities.TimePickerFragment.TimePickedListener;
 import com.hubdub.meetr.models.Events;
@@ -31,7 +41,15 @@ public class ComposeActivity extends FragmentActivity implements
 	private EditText mEventNameInput;
 	private Date eventDate;
 	private Date eventTime;
+	private UiLifecycleHelper lifecycleHelper;
+	boolean pickFriendsWhenSessionOpened;
+	private Button pickFriendsButton;
+    private TextView resultsTextView;
+    private static final int PICK_FRIENDS_ACTIVITY = 1;
 	static final int DATE_DIALOG_ID = 999;
+	private JSONArray guestListArray = new JSONArray();
+	private String results = new String();   
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +61,113 @@ public class ComposeActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_compose);
 		mEventNameInput = (EditText) findViewById(R.id.eventName);
+
+		/*
+		 * Source: Facebook friend picker sample code from the sample
+		 * application
+		 */
+		resultsTextView = (TextView) findViewById(R.id.resultsTextView);
+		pickFriendsButton = (Button) findViewById(R.id.pickFriendsButton);
+		pickFriendsButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				onClickPickFriends();
+			}
+		});
+
+		lifecycleHelper = new UiLifecycleHelper(this,
+				new Session.StatusCallback() {
+					@Override
+					public void call(Session session, SessionState state,
+							Exception exception) {
+						onSessionStateChanged(session, state, exception);
+					}
+				});
+		lifecycleHelper.onCreate(savedInstanceState);
+
+		ensureOpenSession();
 	}
+	
+	/* show the friends selected by the friend picker
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onStart()
+	 */
+	protected void onStart() {
+		super.onStart();
+
+		// Update the display every time we are started.
+		displaySelectedFriends(RESULT_OK);
+	}
+
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case PICK_FRIENDS_ACTIVITY:
+			displaySelectedFriends(resultCode);
+			break;
+		default:
+			Session.getActiveSession().onActivityResult(this, requestCode,
+					resultCode, data);
+			break;
+		}
+	}
+	
+	private void displaySelectedFriends(int resultCode) {
+		MeetrApplication application = (MeetrApplication) getApplication();
+		Collection<GraphUser> selection = application.getSelectedUsers();
+		if (selection != null && selection.size() > 0) {
+			ArrayList<String> names = new ArrayList<String>();
+			for (GraphUser user : selection) {
+				guestListArray.put(user);
+				names.add(user.getName());
+			}
+			results = TextUtils.join(", ", names);
+		} else {
+			results = "<No friends selected>";
+		}
+
+		resultsTextView.setText(results);
+	}
+	
+	/* Re-use open session to facebook for the friend picker
+	 * Better utilization of the already open session. 
+	 */
+	private boolean ensureOpenSession() {
+        if (Session.getActiveSession() == null ||
+                !Session.getActiveSession().isOpened()) {
+            Session.openActiveSession(this, true, new Session.StatusCallback() {
+                @Override
+                public void call(Session session, SessionState state, Exception exception) {
+                    onSessionStateChanged(session, state, exception);
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+	
+	  private void onSessionStateChanged(Session session, SessionState state, Exception exception) {
+	        if (pickFriendsWhenSessionOpened && state.isOpened()) {
+	            pickFriendsWhenSessionOpened = false;
+	            startPickFriendsActivity();
+	        }
+	    }
+	  
+	   private void onClickPickFriends() {
+	        startPickFriendsActivity();
+	    }
+	   
+	    private void startPickFriendsActivity() {
+	        if (ensureOpenSession()) {
+	            Intent intent = new Intent(this, PickFriendsActivity.class);
+	            // Note: The following line is optional, as multi-select behavior is the default for
+	            // FriendPickerFragment. It is here to demonstrate how parameters could be passed to the
+	            // friend picker if single-select functionality was desired, or if a different user ID was
+	            // desired (for instance, to see friends of a friend).
+	            PickFriendsActivity.populateParameters(intent, null, true, true);
+	            startActivityForResult(intent, PICK_FRIENDS_ACTIVITY);
+	        } else {
+	            pickFriendsWhenSessionOpened = true;
+	        }
+	    }
 
 	public void onEventCreateAction(View v) {
 		if (mEventNameInput.getText().length() > 0) {
@@ -53,6 +177,7 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setEventDate(eventDate);
 			event.setEventTime(eventTime);
 			event.setCurrentUser(currentUser);
+			event.setGuestList(guestListArray);
 			event.saveEventually();
 			// Instead of going back to the EventListActivity, we are going to
 			// start a new activity that shows the newly created event
@@ -61,7 +186,9 @@ public class ComposeActivity extends FragmentActivity implements
 			extras.putString("EventName", mEventNameInput.getText().toString());
 			extras.putString("EventDate", eventDate.toString());
 			extras.putString("EventTime", eventTime.toString());
+			extras.putString("GuestList", results);
 			i.putExtras(extras);
+			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
 			startActivity(i);
 			// Need to close this activity and head back out.
 						mEventNameInput.setText("");
@@ -107,5 +234,4 @@ public class ComposeActivity extends FragmentActivity implements
 				"h:mm a", time));
 		eventTime = time.getTime();
 	}
-
 }

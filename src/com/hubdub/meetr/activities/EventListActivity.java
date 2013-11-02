@@ -1,9 +1,15 @@
 package com.hubdub.meetr.activities;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -15,9 +21,11 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.model.GraphUser;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
+import com.parse.Parse;
 import com.parse.ParseObject;
 
 public class EventListActivity extends Activity {
@@ -36,6 +44,9 @@ public class EventListActivity extends Activity {
 		 * user
 		 */
 		ParseObject.registerSubclass(Events.class);
+		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
+				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
+	
 		adapter = new CustomArrayAdapter(this);
 		listView = (ListView) findViewById(R.id.lvItems);
 		listView.setAdapter(adapter);
@@ -61,6 +72,40 @@ public class EventListActivity extends Activity {
 				// TODO Auto-generated method stub
 				Events event = (Events) adapter.getItemAtPosition(pos);
 				Log.d("debug-position-2", event.getEventName());
+				Intent i = new Intent(EventListActivity.this, EventDetailActivity.class);
+				Bundle extras = new Bundle();
+				extras.putString("EventName", event.getEventName());
+				extras.putString("EventDate", event.getEventDate().toString());
+				extras.putString("EventTime", event.getEventTime().toString());
+				
+				JSONArray guestList = new JSONArray();
+				guestList = event.getGuestList();
+				String results = "";
+				/* This needs to be made into a function
+				 * 
+				 */
+				if (guestList != null && guestList.length() > 0) {
+					ArrayList<String> names = new ArrayList<String>();
+					for (int j = 0; j < guestList.length(); j++) {
+						  GraphUser user = null;
+						try {
+							user = (GraphUser)guestList.getJSONObject(j);
+							names.add(user.getName());
+							Log.d("output", names.toString());
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						if(user != null)
+							names.add(user.getName());
+					}
+					results = TextUtils.join(", ", names);
+				} else {
+					results = "<No friends selected>";
+				}
+				extras.putString("GuestList", results);
+				i.putExtras(extras);
+				startActivity(i);
 
 			}
 		});
@@ -130,10 +175,10 @@ public class EventListActivity extends Activity {
 		i.putExtra("dummyApiKey", "q1b2f3j4o5t6l1d2");
 		startActivityForResult(i, REQUEST_CODE);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 			adapter.loadObjects();
 			listView.setAdapter(adapter);
 		}

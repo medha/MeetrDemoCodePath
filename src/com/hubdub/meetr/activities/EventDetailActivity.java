@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hubdub.meetr.R;
+import com.hubdub.meetr.models.Events;
 
 public class EventDetailActivity extends Activity {
 
@@ -15,7 +16,7 @@ public class EventDetailActivity extends Activity {
 	private TextView tvDescriptionBody;
 	private TextView tvDateBody;
 	private TextView tvTimeBody;
-//	private TextView tvGuestsBody;
+    private TextView tvGuestsBody;
 	private TextView tvVenueBody;
 
 	@Override
@@ -29,6 +30,8 @@ public class EventDetailActivity extends Activity {
 		String eventName = getIntent().getStringExtra("EventName");
 		String eventDate = getIntent().getStringExtra("EventDate");
 		String eventTime = getIntent().getStringExtra("EventTime");
+		String guestList = getIntent().getStringExtra("GuestList");
+		
 		
 		tvEventName.setText(eventName);
 //		tvRsvp.setText(event.getRsvp());
@@ -36,7 +39,7 @@ public class EventDetailActivity extends Activity {
 //		tvDescriptionBody.setText(event.getDescription());
 		tvDateBody.setText(eventDate);
 		tvTimeBody.setText(eventTime);
-		//tvGuestsBody.setText(event.getGuestList());
+		tvGuestsBody.setText(guestList);
 //		tvVenueBody.setText();
 		
 	}
@@ -48,7 +51,7 @@ public class EventDetailActivity extends Activity {
 		tvDescriptionBody = (TextView) findViewById(R.id.tvDescriptionBody);
 		tvDateBody = (TextView) findViewById(R.id.tvDateBody);
 		tvTimeBody = (TextView) findViewById(R.id.tvTimeBody);
-//		tvGuestsBody = (TextView) findViewById(R.id.tvGuestsBody);
+		tvGuestsBody = (TextView) findViewById(R.id.tvGuestsBody);
 		tvVenueBody = (TextView) findViewById(R.id.tvVenueBody);
 	}
 	
