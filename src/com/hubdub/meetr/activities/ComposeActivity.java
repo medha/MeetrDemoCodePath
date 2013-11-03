@@ -40,40 +40,33 @@ import com.parse.ParseUser;
 public class ComposeActivity extends FragmentActivity implements
 		OnDateSetListener, TimePickedListener {
 
+	private static final String APPLICATION_ID = "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU";
+	private static final String CLIENT_KEY = "3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH";
 	private EditText mEventNameInput;
 	private Date eventDate;
 	private Date eventTime;
 	private UiLifecycleHelper lifecycleHelper;
 	boolean pickFriendsWhenSessionOpened;
 	private Button pickFriendsButton;
-	private TextView resultsTextView;
 	private static final int PICK_FRIENDS_ACTIVITY = 1;
 	static final int DATE_DIALOG_ID = 999;
 	private JSONArray guestListArray = new JSONArray();
 	private String results = new String();
 	private String selectedString = new String();
 	private TextView tvDescriptionBody;
-	private TextView tvVenueBody;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		/* Parse Initialization */
 		ParseObject.registerSubclass(Events.class);
-		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
-				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
+		Parse.initialize(this, APPLICATION_ID, CLIENT_KEY);
 
 		setContentView(R.layout.activity_compose);
 		mEventNameInput = (EditText) findViewById(R.id.tvEventName);
 		tvDescriptionBody = (TextView) findViewById(R.id.tvDescriptionBody);
-		tvVenueBody = (TextView) findViewById(R.id.tvVenueBody);
-		
 
-		/*
-		 * Source: Facebook friend picker sample code from the sample
-		 * application
-		 */
-		resultsTextView = (TextView) findViewById(R.id.resultsTextView);
+		/* Source: Facebook friend picker sample code from the sample application*/
 		pickFriendsButton = (Button) findViewById(R.id.pickFriendsButton);
 		pickFriendsButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
@@ -94,11 +87,8 @@ public class ComposeActivity extends FragmentActivity implements
 		ensureOpenSession();
 	}
 
-	/*
-	 * show the friends selected by the friend picker (non-Javadoc)
-	 * 
-	 * @see android.support.v4.app.FragmentActivity#onStart()
-	 */
+	/* show the friends selected by the friend picker (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onStart() */
 	protected void onStart() {
 		super.onStart();
 
@@ -134,30 +124,16 @@ public class ComposeActivity extends FragmentActivity implements
 				names.add(user.getName());
 				selectedStr.add(user.getId());
 			}
-			results = TextUtils.join(", ", names);
+
 			selectedString = TextUtils.join(", ", selectedStr);
+			pickFriendsButton.setText(selection.size() + " Friends selected");
 		} else {
 			results = "<No friends selected>";
+			pickFriendsButton.setText("Add friends");
 		}
-		resultsTextView.setText(results);
+		
 	}
 	
-	private void addSelectedFriends() {
-		/*
-		 * get the global application context to save the results from facebook
-		 * friend picker.
-		 */
-		MeetrApplication application = (MeetrApplication) getApplication();
-		Collection<GraphUser> selection = application.getSelectedUsers();
-
-		if (selection != null && selection.size() > 0) {
-			for (GraphUser user : selection) {
-				guestListArray.put(user.getInnerJSONObject());
-			}
-		}
-	}
-
-
 	/*
 	 * Re-use open session to facebook for the friend picker Better utilization
 	 * of the already open session.
@@ -243,6 +219,21 @@ public class ComposeActivity extends FragmentActivity implements
 			MeetrApplication application = (MeetrApplication) getApplication();
 			application.setSelectedUsers(null);
 			finish();
+		}
+	}
+	
+	private void addSelectedFriends() {
+		/*
+		 * get the global application context to save the results from facebook
+		 * friend picker.
+		 */
+		MeetrApplication application = (MeetrApplication) getApplication();
+		Collection<GraphUser> selection = application.getSelectedUsers();
+
+		if (selection != null && selection.size() > 0) {
+			for (GraphUser user : selection) {
+				guestListArray.put(user.getInnerJSONObject());
+			}
 		}
 	}
 
