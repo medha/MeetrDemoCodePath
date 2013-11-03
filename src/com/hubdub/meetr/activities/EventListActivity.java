@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,9 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.facebook.model.GraphUser;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
@@ -109,6 +106,7 @@ public class EventListActivity extends Activity {
 				extras.putLong("EventDate", event.getEventDate().getTime());
 				extras.putLong("EventTime", event.getEventTime().getTime());				
 				extras.putString("GuestList", getStrGuestList(guestList));
+				extras.putString("Location", event.getLocation());
 
 				Intent i = new Intent(EventListActivity.this, EventDetailActivity.class);
 				i.putExtras(extras);

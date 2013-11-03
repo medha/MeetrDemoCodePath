@@ -9,8 +9,14 @@ import java.util.GregorianCalendar;
 import org.json.JSONArray;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -28,17 +34,21 @@ import android.widget.TextView;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphLocation;
+import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.activities.TimePickerFragment.TimePickedListener;
+import com.hubdub.meetr.fragments.DatePickerFragment;
+import com.hubdub.meetr.fragments.TimePickerFragment;
+import com.hubdub.meetr.fragments.TimePickerFragment.TimePickedListener;
 import com.hubdub.meetr.models.Events;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-@SuppressLint("SimpleDateFormat")
+@SuppressLint({ "SimpleDateFormat", "DefaultLocale" })
 public class ComposeActivity extends FragmentActivity implements
-		OnDateSetListener, TimePickedListener {
+		OnDateSetListener, TimePickedListener, LocationListener {
 
 	private static final String APPLICATION_ID = "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU";
 	private static final String CLIENT_KEY = "3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH";
@@ -49,11 +59,23 @@ public class ComposeActivity extends FragmentActivity implements
 	boolean pickFriendsWhenSessionOpened;
 	private Button pickFriendsButton;
 	private static final int PICK_FRIENDS_ACTIVITY = 1;
+	private static final int PICK_PLACE_ACTIVITY = 2;
 	static final int DATE_DIALOG_ID = 999;
 	private JSONArray guestListArray = new JSONArray();
 	private String results = new String();
 	private String selectedString = new String();
 	private TextView tvDescriptionBody;
+	private Button btLocation;
+	private Location lastKnownLocation;
+	private LocationManager locationManager;
+	private Location pickPlaceForLocationWhenSessionOpened = null;
+	private static final Location SAN_FRANCISCO_LOCATION = new Location("") {
+		{
+			setLatitude(37.7750);
+			setLongitude(-122.4183);
+		}
+	};
+	private static final int SEARCH_RADIUS_METERS = 1000*50; //50km
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +87,13 @@ public class ComposeActivity extends FragmentActivity implements
 		setContentView(R.layout.activity_compose);
 		mEventNameInput = (EditText) findViewById(R.id.tvEventName);
 		tvDescriptionBody = (TextView) findViewById(R.id.tvDescriptionBody);
-
-		/* Source: Facebook friend picker sample code from the sample application*/
 		pickFriendsButton = (Button) findViewById(R.id.pickFriendsButton);
-		pickFriendsButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				onClickPickFriends();
-			}
-		});
+		btLocation = (Button) findViewById(R.id.btLocation);
 
+		/*
+		 * Source: Facebook friend picker sample code from the sample
+		 * application
+		 */
 		lifecycleHelper = new UiLifecycleHelper(this,
 				new Session.StatusCallback() {
 					@Override
@@ -85,21 +105,54 @@ public class ComposeActivity extends FragmentActivity implements
 		lifecycleHelper.onCreate(savedInstanceState);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		ensureOpenSession();
+		
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 	}
 
-	/* show the friends selected by the friend picker (non-Javadoc)
-	 * @see android.support.v4.app.FragmentActivity#onStart() */
+	/*
+	 * show the friends selected by the friend picker (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.FragmentActivity#onStart()
+	 */
 	protected void onStart() {
 		super.onStart();
 
 		// Update the display every time we are started.
 		displaySelectedFriends(RESULT_OK);
+		
+		// Update the display every time we are started (this will be "no place selected" on first
+        // run, or possibly details of a place if the activity is being re-created).
+        displaySelectedPlace(RESULT_OK);
 	}
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        lifecycleHelper.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        lifecycleHelper.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        lifecycleHelper.onResume();
+    }
+	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+        lifecycleHelper.onActivityResult(requestCode, resultCode, data);
+		
 		switch (requestCode) {
 		case PICK_FRIENDS_ACTIVITY:
 			displaySelectedFriends(resultCode);
+			break;
+		case PICK_PLACE_ACTIVITY:
+			displaySelectedPlace(resultCode);
 			break;
 		default:
 			Session.getActiveSession().onActivityResult(this, requestCode,
@@ -119,21 +172,37 @@ public class ComposeActivity extends FragmentActivity implements
 		if (selection != null && selection.size() > 0) {
 			ArrayList<String> names = new ArrayList<String>();
 			ArrayList<String> selectedStr = new ArrayList<String>();
-			
+
 			for (GraphUser user : selection) {
 				names.add(user.getName());
 				selectedStr.add(user.getId());
 			}
-
+			results = TextUtils.join(", ", names);
 			selectedString = TextUtils.join(", ", selectedStr);
 			pickFriendsButton.setText(selection.size() + " Friends selected");
 		} else {
 			results = "<No friends selected>";
 			pickFriendsButton.setText("Add friends");
 		}
-		
 	}
-	
+
+	private void displaySelectedPlace(int resultCode) {
+		String results = "";
+		MeetrApplication application = (MeetrApplication) getApplication();
+
+        GraphPlace selection = application.getSelectedPlace();
+        if (selection != null) {
+            GraphLocation location = selection.getLocation();
+
+            // TODO format this better for when parts of the address are missing. Adds comma without any word before it.
+            results = String.format("%s\n%s, %s, %s", selection.getName(), location.getStreet(), location.getCity(), location.getState());
+        } else {
+            results = "Pick a location";
+        }
+
+		btLocation.setText(results);
+	}
+
 	/*
 	 * Re-use open session to facebook for the friend picker Better utilization
 	 * of the already open session.
@@ -159,9 +228,15 @@ public class ComposeActivity extends FragmentActivity implements
 			pickFriendsWhenSessionOpened = false;
 			startPickFriendsActivity();
 		}
+
+		if (pickPlaceForLocationWhenSessionOpened != null && state.isOpened()) {
+			Location location = pickPlaceForLocationWhenSessionOpened;
+			pickPlaceForLocationWhenSessionOpened = null;
+			startPickPlaceActivity(location);
+		}
 	}
 
-	private void onClickPickFriends() {
+	public void onClickPickFriends(View v) {
 		startPickFriendsActivity();
 	}
 
@@ -175,7 +250,8 @@ public class ComposeActivity extends FragmentActivity implements
 			// friend picker if single-select functionality was desired, or if a
 			// different user ID was
 			// desired (for instance, to see friends of a friend).
-			PickFriendsActivity.populateParameters(intent, null, true, false, selectedString);
+			PickFriendsActivity.populateParameters(intent, null, true, false,
+					selectedString);
 			startActivityForResult(intent, PICK_FRIENDS_ACTIVITY);
 		} else {
 			pickFriendsWhenSessionOpened = true;
@@ -186,32 +262,34 @@ public class ComposeActivity extends FragmentActivity implements
 		if (mEventNameInput.getText().length() > 0) {
 			Events event = new Events();
 			ParseUser currentUser = ParseUser.getCurrentUser();
-			
+
 			event.setEventName(mEventNameInput.getText().toString());
 			event.setEventDescription(tvDescriptionBody.getText().toString());
 			event.setEventDate(eventDate);
 			event.setEventTime(eventTime);
 			addSelectedFriends();
+			event.setLocation(btLocation.getText().toString());
 			event.setGuestList(guestListArray);
 			event.setCurrentUser(currentUser);
 			event.saveEventually();
-			
+
 			// Instead of going back to the EventListActivity, we are going to
 			// start a new activity that shows the newly created event
 			Intent i = new Intent(ComposeActivity.this,
 					EventDetailActivity.class);
-			
+
 			// Additional information being sent across
 			Bundle extras = new Bundle();
 			extras.putString("EventName", mEventNameInput.getText().toString());
 			extras.putLong("EventDate", eventDate.getTime());
 			extras.putLong("EventTime", eventTime.getTime());
 			extras.putString("GuestList", results);
-			extras.putString("Description", tvDescriptionBody.getText().toString());
-			
+			extras.putString("Description", tvDescriptionBody.getText()
+					.toString());
+			extras.putString("Location", btLocation.getText().toString());
 			i.putExtras(extras);
 			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-			
+
 			startActivity(i);
 			// Need to close this activity and head back out.
 			mEventNameInput.setText("");
@@ -221,7 +299,7 @@ public class ComposeActivity extends FragmentActivity implements
 			finish();
 		}
 	}
-	
+
 	private void addSelectedFriends() {
 		/*
 		 * get the global application context to save the results from facebook
@@ -257,27 +335,87 @@ public class ComposeActivity extends FragmentActivity implements
 	public void onDateSet(DatePicker view, int year, int monthOfYear,
 			int dayOfMonth) {
 		Log.w("DatePicker", "Date = " + year);
-		((TextView) findViewById(R.id.btnChangeDate)).setText("Date: " + (monthOfYear + 1) + "-" + dayOfMonth + "-" + year);
+		((TextView) findViewById(R.id.btnChangeDate)).setText("Date: "
+				+ (monthOfYear + 1) + "-" + dayOfMonth + "-" + year);
 
-		// This is how you convert the date set by the date picker to Parse time.
-		GregorianCalendar mEventDate = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+		// This is how you convert the date set by the date picker to Parse
+		// time.
+		GregorianCalendar mEventDate = new GregorianCalendar(year, monthOfYear,
+				dayOfMonth);
 		eventDate = mEventDate.getTime();
 	}
 
 	@Override
 	public void onTimePicked(Calendar time) {
 		Log.w("TimePicker", "Time = " + DateFormat.format("h:mm a", time));
-		((TextView) findViewById(R.id.btnChangeTime)).setText("Time: " + (DateFormat.format( 
-				"h:mm a", time)));
+		((TextView) findViewById(R.id.btnChangeTime)).setText("Time: "
+				+ (DateFormat.format("h:mm a", time)));
 		eventTime = time.getTime();
 	}
-	
-	 public void onDoneButtonClicked() {
-	        // We just store our selection in the Application for other activities to look at.
-		 	onEventCreateAction(this.getCurrentFocus());
-	    	finish();
+
+	public void onDoneButtonClicked() {
+		// We just store our selection in the Application for other activities
+		// to look at.
+		onEventCreateAction(this.getCurrentFocus());
+		finish();
 	}
-	    
+
+	public void onPickLocationButtonSelected(View v) {
+		// Intent i = new Intent(ComposeActivity.this, PickPlaceActivity.class);
+		// startActivityForResult(i, PICK_PLACE_ACTIVITY );
+		findCurrentLocation();
+	}
+
+	private void findCurrentLocation() {
+		try {
+			if (lastKnownLocation == null) {
+				Criteria criteria = new Criteria();
+				String bestProvider = locationManager.getBestProvider(criteria,
+						false);
+				if (bestProvider != null) {
+					lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
+				}
+			}
+			if (lastKnownLocation == null) {
+				String model = android.os.Build.MODEL;
+				if (model.equals("sdk") || model.equals("google_sdk")
+						|| model.contains("x86") || model.contains("Google Apps")) {
+					// Looks like they are on an emulator, pretend we're in
+					// Paris if we don't have a
+					// location set.
+					lastKnownLocation = SAN_FRANCISCO_LOCATION;
+				} else {
+					onError(new Exception(getString(R.string.no_location)));
+					return;
+				}
+			}
+			startPickPlaceActivity(lastKnownLocation);
+		} catch (Exception ex) {
+			onError(ex);
+		}
+	}
+
+	private void startPickPlaceActivity(Location location) {
+		if (ensureOpenSession()) {
+			MeetrApplication application = (MeetrApplication) getApplication();
+			application.setSelectedPlace(null);
+
+			Intent intent = new Intent(this, PickPlaceActivity.class);
+			PickPlaceActivity.populateParameters(intent, location, null, SEARCH_RADIUS_METERS, false);
+
+			startActivityForResult(intent, PICK_PLACE_ACTIVITY);
+		} else {
+			pickPlaceForLocationWhenSessionOpened = location;
+		}
+	}
+
+	private void onError(Exception exception) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Error").setMessage(exception.getMessage())
+				.setPositiveButton("OK", null);
+		builder.show();
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -292,10 +430,28 @@ public class ComposeActivity extends FragmentActivity implements
 			onDoneButtonClicked();
 			return true;
 		case android.R.id.home:
-			onBackPressed();  //This should be compatible with API 5+
+			onBackPressed(); // This should be compatible with API 5+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		lastKnownLocation = location;
+
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
 	}
 }

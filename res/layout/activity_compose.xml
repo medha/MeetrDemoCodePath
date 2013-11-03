@@ -59,7 +59,8 @@
             android:layout_alignLeft="@+id/llButtonRow"
             android:layout_alignRight="@+id/llButtonRow"
             android:layout_below="@+id/llButtonRow"
-            android:text="Pick a location" />
+            android:text="Pick a location"
+            android:onClick="onPickLocationButtonSelected" />
 
         <Button
             android:id="@+id/pickFriendsButton"
@@ -71,21 +72,23 @@
             android:layout_below="@+id/btLocation"
             android:gravity="left|center_vertical"
             android:textSize="15sp" 
-            android:text="Add friends"/>
+            android:text="Add friends"
+            android:onClick="onClickPickFriends"/>
 
         <EditText
             android:id="@+id/tvDescriptionBody"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/pickFriendsButton"
             android:layout_alignLeft="@+id/pickFriendsButton"
             android:layout_alignRight="@+id/pickFriendsButton"
+            android:layout_below="@+id/pickFriendsButton"
             android:ems="10"
-            android:gravity="bottom|left"
+            android:gravity="top|left"
             android:hint="Event details"
-            android:lines="3"
+            android:lines="2"
             android:scrollbars="vertical"
             android:textSize="15sp" >
+
         </EditText>
     </RelativeLayout>
 

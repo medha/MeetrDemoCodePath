@@ -58,9 +58,12 @@ public class Events extends ParseObject {
 		return null;
 	}
 
-	public String getVenue() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getLocation() {
+		return getString("Location");
+	}
+	
+	public void setLocation(String name) {
+		put("Location", name);
 	}
 	
 	public JSONArray getGuestList() {

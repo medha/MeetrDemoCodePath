@@ -12,12 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.models.Events;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class EventDetailActivity extends Activity {
 
 	private TextView tvEventName;
-	private TextView tvRsvp;
+//	private TextView tvRsvp;
 	private ImageView ivEventImage;
 	private TextView tvDescriptionBody;
 	private TextView tvDateBody;
@@ -41,20 +42,30 @@ public class EventDetailActivity extends Activity {
 		Long eventTime = i.getLongExtra("EventTime", 0);
 		String date = DateFormat.format("dd MMM, yyyy", eventDate).toString();
 		String time = DateFormat.format("h:mm a", eventTime).toString();
-
+		String location = i.getStringExtra("Location");
+		
+		String locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
+		String url = "http://maps.googleapis.com/maps/api/staticmap?center="
+				+ locationQuery
+				+ "zoom=13&size=400x220&maptype=roadmap&markers=color:red%7Caddress="
+				+ locationQuery + "%7C&sensor=false";
+		
+		
 		
 		String guestList = getIntent().getStringExtra("GuestList");
 		
 		
 		tvEventName.setText(eventName);
-//		tvRsvp.setText(event.getRsvp());
-//		ivEventImage.setImageBitmap(event.getEventImageUrl());
+//		ivEventImage.setImageBitmap(());
 		tvDescriptionBody.setText(eventDescription);
 		tvDateBody.setText(date);
 		tvTimeBody.setText(time);
 		tvGuestsBody.setText(guestList);
-//		tvVenueBody.setText();
-		
+		tvVenueBody.setText(location);
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
+		ImageLoader imageLoader = ImageLoader.getInstance();
+		imageLoader.init(config);
+		imageLoader.displayImage(url, ivEventImage);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		
@@ -62,13 +73,13 @@ public class EventDetailActivity extends Activity {
 
 	private void setupViews() {
 		tvEventName = (TextView) findViewById(R.id.tvEventName);
-		tvRsvp = (TextView) findViewById(R.id.tvRsvp);
-		ivEventImage = (ImageView) findViewById(R.id.ivEventImage);
+//		tvRsvp = (TextView) findViewById(R.id.tvRsvp);
 		tvDescriptionBody = (TextView) findViewById(R.id.tvDescriptionBody);
 		tvDateBody = (TextView) findViewById(R.id.tvDateBody);
 		tvTimeBody = (TextView) findViewById(R.id.tvTimeBody);
 		tvGuestsBody = (TextView) findViewById(R.id.tvGuestsBody);
 		tvVenueBody = (TextView) findViewById(R.id.tvVenueBody);
+		ivEventImage = (ImageView) findViewById(R.id.ivEventImage);
 	}
 	
 	public void onEditButtonClicked() {
