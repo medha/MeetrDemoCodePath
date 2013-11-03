@@ -1,70 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+<RelativeLayout 
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    android:layout_height="fill_parent" >
 
     <EditText
-        android:id="@+id/eventName"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/eventNameHint"
-        android:inputType="text" >
-
-        <requestFocus />
-    </EditText>
-
-    <TextView
-        android:id="@+id/tvDate"
+        android:id="@+id/tvEventName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dateHint" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:hint="Event name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/ivEventImage"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tvEventName"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/darker_gray"
+        android:onClick="openImageChooserFragment" />
+
+    <TextView
+        android:id="@+id/tvTimeBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvDescriptionBody"
+        android:layout_below="@+id/btnChangeDate"
+        android:layout_toLeftOf="@+id/btnChangeTime"
+        android:hint="Time"
+        android:onClick="showTimePickerDialog" />
+
+    <TextView
+        android:id="@+id/tvGuestsBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvTimeBody"
+        android:layout_alignRight="@+id/tvTimeBody"
+        android:layout_below="@+id/btnChangeTime"
+        android:hint="Pick friends" />
+    
+    <Button
+        android:id="@+id/btnChangeTime"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnChangeDate"
+        android:layout_alignRight="@+id/btnChangeDate"
+        android:layout_below="@+id/btnChangeDate"
+        android:gravity="left|center_vertical"
+        android:onClick="showTimePickerDialog"
+        android:text="@string/pick_time"
+        android:textSize="15sp" />
+    
+    <Button
+        android:id="@+id/createEventButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/pickFriendsButton"
+        android:layout_alignLeft="@+id/pickFriendsButton"
+        android:layout_below="@+id/btLocation"
+        android:onClick="onEventCreateAction"
+        android:text="@string/createEvent" />
+
+    <EditText
+        android:id="@+id/tvDescriptionBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvEventName"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ivEventImage"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:gravity="bottom|left"
+        android:hint="Description"
+        android:lines="2"
+        android:scrollbars="vertical"
+        android:textSize="15sp" >
+
+    </EditText>
 
     <Button
         android:id="@+id/btnChangeDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_alignLeft="@+id/tvDescriptionBody"
+        android:layout_alignRight="@+id/tvDescriptionBody"
+        android:layout_below="@+id/tvDescriptionBody"
+        android:gravity="left|center_vertical"
         android:onClick="showDatePickerDialog"
-        android:text="Change Date" />
-    
+        android:text="Pick Date "
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/btLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvLocation"
+        android:layout_alignLeft="@+id/pickFriendsButton"
+        android:layout_alignRight="@+id/pickFriendsButton"
+        android:text="Pick a location" />
+
     <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
+        android:id="@+id/resultsTextView"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/timeHint" />
-    
+        android:layout_alignLeft="@+id/tvTimeBody"
+        android:layout_alignRight="@+id/btnChangeTime"
+        android:layout_below="@+id/btnChangeTime"
+        android:gravity="left|center_vertical"
+        android:text="No friends selected yet!"
+        android:textSize="12sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp" />
 
     <Button
-        android:id="@+id/btnChangeTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="showTimePickerDialog"
-        android:layout_gravity="right"
-        android:text="@string/pick_time" />
-
-    <Button
-        android:id="@+id/createEventButton"
+        android:id="@+id/pickFriendsButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:onClick="onEventCreateAction"
-        android:text="@string/createEvent" />
-    
-     <Button
-            android:id="@+id/pickFriendsButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Pick Friends"
-            />
-     s
-     <TextView
-            android:id="@+id/resultsTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            />
+        android:layout_alignLeft="@+id/btnChangeTime"
+        android:layout_alignRight="@+id/resultsTextView"
+        android:layout_below="@+id/resultsTextView"
+        android:gravity="left|center_vertical"
+        android:text="Pick Friends"
+        android:textSize="15sp" />
 
-    
-</LinearLayout>
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/resultsTextView"
+        android:layout_below="@+id/pickFriendsButton"
+        android:gravity="left|center_vertical"
+        android:text="Where would you like to meet?"
+        android:textSize="12sp"
+        android:layout_marginTop="5dp" />
+
+</RelativeLayout>
+</ScrollView>

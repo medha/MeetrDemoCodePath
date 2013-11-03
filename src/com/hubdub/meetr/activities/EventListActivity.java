@@ -108,8 +108,9 @@ public class EventListActivity extends Activity {
 
 				Bundle extras = new Bundle();
 				extras.putString("EventName", event.getEventName());
-				extras.putString("EventDate", event.getEventDate().toString());
-				extras.putString("EventTime", event.getEventTime().toString());				
+				extras.putString("Description", event.getDescription());
+				extras.putLong("EventDate", event.getEventDate().getTime());
+				extras.putLong("EventTime", event.getEventTime().getTime());				
 				extras.putString("GuestList", getStrGuestList(guestList));
 
 				Intent i = new Intent(EventListActivity.this, EventDetailActivity.class);
@@ -174,13 +175,8 @@ public class EventListActivity extends Activity {
 
 	}
 
-	/*
-	 * Handle the event when changing orientation triggers restart of activity
-	 * Read: http://
-	 * 
-	 * @see
-	 * android.app.Activity#onConfigurationChanged(android.content.res.Configuration
-	 * )
+	/* Handle the event when changing orientation triggers restart of activity
+	 * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
 	 */
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {

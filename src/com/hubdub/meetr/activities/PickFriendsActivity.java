@@ -46,7 +46,7 @@ public class PickFriendsActivity extends FragmentActivity {
         intent.putExtra(FriendPickerFragment.USER_ID_BUNDLE_KEY, userId);
         intent.putExtra(FriendPickerFragment.MULTI_SELECT_BUNDLE_KEY, multiSelect);
         intent.putExtra(FriendPickerFragment.SHOW_TITLE_BAR_BUNDLE_KEY, showTitleBar);
-        intent.putExtra(FriendPickerFragment.SELECTION_BUNDLE_KEY, selectedString);
+        intent.putExtra("com.facebook.android.PickerFragment.Selection", selectedString);
     }
 
     @Override

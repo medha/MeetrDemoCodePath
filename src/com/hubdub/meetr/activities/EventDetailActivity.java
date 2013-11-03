@@ -1,7 +1,9 @@
 package com.hubdub.meetr.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,18 +29,25 @@ public class EventDetailActivity extends Activity {
 		
 		setupViews();
 		
-		String eventName = getIntent().getStringExtra("EventName");
-		String eventDate = getIntent().getStringExtra("EventDate");
-		String eventTime = getIntent().getStringExtra("EventTime");
+		Intent i = getIntent();
+		
+		String eventName = i.getStringExtra("EventName");
+		String eventDescription = i.getStringExtra("Description");
+		Long eventDate = i.getLongExtra("EventDate", 0);
+		Long eventTime = i.getLongExtra("EventTime", 0);
+		String date = DateFormat.format("dd MMM, yyyy", eventDate).toString();
+		String time = DateFormat.format("h:mm a", eventTime).toString();
+
+		
 		String guestList = getIntent().getStringExtra("GuestList");
 		
 		
 		tvEventName.setText(eventName);
 //		tvRsvp.setText(event.getRsvp());
 //		ivEventImage.setImageBitmap(event.getEventImageUrl());
-//		tvDescriptionBody.setText(event.getDescription());
-		tvDateBody.setText(eventDate);
-		tvTimeBody.setText(eventTime);
+		tvDescriptionBody.setText(eventDescription);
+		tvDateBody.setText(date);
+		tvTimeBody.setText(time);
 		tvGuestsBody.setText(guestList);
 //		tvVenueBody.setText();
 		

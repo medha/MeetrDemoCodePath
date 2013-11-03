@@ -50,8 +50,7 @@ public class Events extends ParseObject {
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return getString("Description");
 	}
 
 	public Bitmap getEventImageUrl() {
@@ -70,6 +69,10 @@ public class Events extends ParseObject {
 	
 	public void setGuestList(JSONArray guestList) {
 		put("GuestList", guestList);
+	}
+
+	public void setEventDescription(String description) {
+		put("Description", description);
 	}
 
 }

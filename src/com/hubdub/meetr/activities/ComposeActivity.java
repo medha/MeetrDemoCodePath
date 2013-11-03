@@ -50,6 +50,8 @@ public class ComposeActivity extends FragmentActivity implements
 	private JSONArray guestListArray = new JSONArray();
 	private String results = new String();
 	private String selectedString = new String();
+	private TextView tvDescriptionBody;
+	private TextView tvVenueBody;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,10 @@ public class ComposeActivity extends FragmentActivity implements
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
 
 		setContentView(R.layout.activity_compose);
-		mEventNameInput = (EditText) findViewById(R.id.eventName);
+		mEventNameInput = (EditText) findViewById(R.id.tvEventName);
+		tvDescriptionBody = (TextView) findViewById(R.id.tvDescriptionBody);
+		tvVenueBody = (TextView) findViewById(R.id.tvVenueBody);
+		
 
 		/*
 		 * Source: Facebook friend picker sample code from the sample
@@ -205,6 +210,7 @@ public class ComposeActivity extends FragmentActivity implements
 			ParseUser currentUser = ParseUser.getCurrentUser();
 			
 			event.setEventName(mEventNameInput.getText().toString());
+			event.setEventDescription(tvDescriptionBody.getText().toString());
 			event.setEventDate(eventDate);
 			event.setEventTime(eventTime);
 			addSelectedFriends();
@@ -220,9 +226,10 @@ public class ComposeActivity extends FragmentActivity implements
 			// Additional information being sent across
 			Bundle extras = new Bundle();
 			extras.putString("EventName", mEventNameInput.getText().toString());
-			extras.putString("EventDate", eventDate.toString());
-			extras.putString("EventTime", eventTime.toString());
+			extras.putLong("EventDate", eventDate.getTime());
+			extras.putLong("EventTime", eventTime.getTime());
 			extras.putString("GuestList", results);
+			extras.putString("Description", tvDescriptionBody.getText().toString());
 			
 			i.putExtras(extras);
 			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
@@ -257,21 +264,18 @@ public class ComposeActivity extends FragmentActivity implements
 	public void onDateSet(DatePicker view, int year, int monthOfYear,
 			int dayOfMonth) {
 		Log.w("DatePicker", "Date = " + year);
-		((TextView) findViewById(R.id.tvDate)).setText("Date = "
-				+ (monthOfYear + 1) + "-" + dayOfMonth + "-" + year);
+		((TextView) findViewById(R.id.btnChangeDate)).setText("Date: " + (monthOfYear + 1) + "-" + dayOfMonth + "-" + year);
 
-		// This is how you convert the date set by the date picker to Parse
-		// time.
-		GregorianCalendar mEventDate = new GregorianCalendar(year, monthOfYear,
-				dayOfMonth);
+		// This is how you convert the date set by the date picker to Parse time.
+		GregorianCalendar mEventDate = new GregorianCalendar(year, monthOfYear, dayOfMonth);
 		eventDate = mEventDate.getTime();
 	}
 
 	@Override
 	public void onTimePicked(Calendar time) {
 		Log.w("TimePicker", "Time = " + DateFormat.format("h:mm a", time));
-		((TextView) findViewById(R.id.tvTime)).setText(DateFormat.format(
-				"h:mm a", time));
+		((TextView) findViewById(R.id.btnChangeTime)).setText("Time: " + (DateFormat.format( 
+				"h:mm a", time)));
 		eventTime = time.getTime();
 	}
 }
