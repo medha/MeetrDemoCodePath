@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.hubdub.meetr.R;
@@ -25,6 +26,8 @@ public class CameraActivity extends Activity {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
 	    this.imageView = (ImageView)this.findViewById(R.id.imageView1);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
    	}
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
@@ -38,6 +41,23 @@ public class CameraActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.camera, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_accept:
+			finish();
+			return true;
+		case R.id.action_trash:
+			finish();
+			return true;
+		case android.R.id.home:
+			onBackPressed();  //This should be compatible with API 5+
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 }

@@ -17,6 +17,8 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -88,7 +90,7 @@ public class ComposeActivity extends FragmentActivity implements
 					}
 				});
 		lifecycleHelper.onCreate(savedInstanceState);
-
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		ensureOpenSession();
 	}
 
@@ -277,5 +279,32 @@ public class ComposeActivity extends FragmentActivity implements
 		((TextView) findViewById(R.id.btnChangeTime)).setText("Time: " + (DateFormat.format( 
 				"h:mm a", time)));
 		eventTime = time.getTime();
+	}
+	
+	 public void onDoneButtonClicked() {
+	        // We just store our selection in the Application for other activities to look at.
+		 	onEventCreateAction(this.getCurrentFocus());
+	    	finish();
+	}
+	    
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.eventcreate, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_create:
+			onDoneButtonClicked();
+			return true;
+		case android.R.id.home:
+			onBackPressed();  //This should be compatible with API 5+
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }

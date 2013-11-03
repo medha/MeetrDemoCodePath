@@ -68,9 +68,6 @@ public class EventListActivity extends Activity {
 		case R.id.action_compose:
 			composeEvent();
 			return true;
-		case R.id.action_camera:
-			callCameraFragment();
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -164,16 +161,6 @@ public class EventListActivity extends Activity {
 		}
 	}
 
-	public void callCameraFragment() {
-		Intent i = new Intent(this, CameraActivity.class);
-		startActivity(i);
-
-		Toast toast = Toast.makeText(getApplicationContext(), "Add pictures",
-				Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-		toast.show();
-
-	}
 
 	/* Handle the event when changing orientation triggers restart of activity
 	 * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
