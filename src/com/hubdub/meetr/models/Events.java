@@ -78,4 +78,9 @@ public class Events extends ParseObject {
 		put("Description", description);
 	}
 
+	public String getEventId() {
+		return getString("objectId");
+		
+	}
+
 }

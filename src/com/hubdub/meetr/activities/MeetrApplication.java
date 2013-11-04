@@ -9,6 +9,7 @@ import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
 
 public class MeetrApplication extends Application {
+	
 	private Collection<GraphUser> selectedUsers = new ArrayList<GraphUser>();
 	private GraphPlace selectedPlace;
 

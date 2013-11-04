@@ -42,21 +42,15 @@ public class EventDetailActivity extends Activity {
 		Long eventTime = i.getLongExtra("EventTime", 0);
 		String date = DateFormat.format("dd MMM, yyyy", eventDate).toString();
 		String time = DateFormat.format("h:mm a", eventTime).toString();
+		String guestList = getIntent().getStringExtra("GuestList");
 		String location = i.getStringExtra("Location");
-		
 		String locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
 		String url = "http://maps.googleapis.com/maps/api/staticmap?center="
 				+ locationQuery
 				+ "zoom=13&size=400x220&maptype=roadmap&markers=color:red%7Caddress="
 				+ locationQuery + "%7C&sensor=false";
 		
-		
-		
-		String guestList = getIntent().getStringExtra("GuestList");
-		
-		
 		tvEventName.setText(eventName);
-//		ivEventImage.setImageBitmap(());
 		tvDescriptionBody.setText(eventDescription);
 		tvDateBody.setText(date);
 		tvTimeBody.setText(time);
@@ -67,8 +61,6 @@ public class EventDetailActivity extends Activity {
 		imageLoader.init(config);
 		imageLoader.displayImage(url, ivEventImage);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
-		
 	}
 
 	private void setupViews() {

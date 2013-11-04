@@ -1,13 +1,19 @@
 package com.hubdub.meetr.activities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -19,7 +25,9 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 public class LoginActivity extends Activity {
 
@@ -52,6 +60,12 @@ public class LoginActivity extends Activity {
 			// Go to the user info activity
 			showUserDetailsActivity();
 		}
+		
+		// Specify a Activity to handle all pushes by default.
+		PushService.setDefaultPushCallback(this, EventListActivity.class);
+		
+		// Save the current installation.
+		ParseInstallation.getCurrentInstallation().saveInBackground();
 	}
 
 	@Override
@@ -65,6 +79,10 @@ public class LoginActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+		
+		// subscribe the user to all push notifications
+		PushService.subscribe(LoginActivity.this, "all", EventListActivity.class);		
+		
 	}
 
 	private void onLoginButtonClicked() {

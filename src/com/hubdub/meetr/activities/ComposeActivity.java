@@ -5,8 +5,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -42,9 +45,15 @@ import com.hubdub.meetr.fragments.DatePickerFragment;
 import com.hubdub.meetr.fragments.TimePickerFragment;
 import com.hubdub.meetr.fragments.TimePickerFragment.TimePickedListener;
 import com.hubdub.meetr.models.Events;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 @SuppressLint({ "SimpleDateFormat", "DefaultLocale" })
 public class ComposeActivity extends FragmentActivity implements
@@ -181,7 +190,7 @@ public class ComposeActivity extends FragmentActivity implements
 			selectedString = TextUtils.join(", ", selectedStr);
 			pickFriendsButton.setText(selection.size() + " Friends selected");
 		} else {
-			results = "<No friends selected>";
+			results = "Add friends";
 			pickFriendsButton.setText("Add friends");
 		}
 	}
@@ -260,7 +269,7 @@ public class ComposeActivity extends FragmentActivity implements
 
 	public void onEventCreateAction(View v) {
 		if (mEventNameInput.getText().length() > 0) {
-			Events event = new Events();
+			final Events event = new Events();
 			ParseUser currentUser = ParseUser.getCurrentUser();
 
 			event.setEventName(mEventNameInput.getText().toString());
@@ -271,8 +280,66 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setLocation(btLocation.getText().toString());
 			event.setGuestList(guestListArray);
 			event.setCurrentUser(currentUser);
-			event.saveEventually();
+			Log.d("DEBUG", "about to save event");
+			
+			event.saveInBackground(new SaveCallback() {
+				@Override
+				public void done(ParseException e) {
+					final String eventId = event.getObjectId();
 
+					// get the guestlist
+					JSONArray guestList = event.getGuestList();
+					
+					for(int i=0; i<guestList.length(); i++) {
+						try {
+							/* Get facebook id for each guest */
+							JSONObject guest = (JSONObject) guestList.get(i);
+							String fbId = (String) guest.get("id");
+							Log.d("debug-clusterfuck", fbId);
+														
+							ParseQuery<ParseObject> query = ParseQuery.getQuery("Installation");
+							query.whereEqualTo("fbId", fbId);
+							query.findInBackground(new FindCallback<ParseObject>() {
+								public void done(List<ParseObject> object, ParseException e) {
+								    if (object == null) {
+								      Log.d("score", "The getFirst request failed.");
+								    } else {
+									    	ParseObject queryResult = object.get(0);
+									    	JSONArray channelData = (JSONArray) queryResult.get("channels");
+											int length = channelData.length();
+											try {
+												channelData.put(length, "user_" + eventId);
+											} catch (JSONException e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+											queryResult.put("channels", channelData);
+											queryResult.saveInBackground();			
+									      Log.d("score", "Retrieved the object.");
+									    }
+									  }
+									});
+							System.out.println(guest);
+						} catch (JSONException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					
+					// for each guest in the guest list
+						// get the list of channels they are subscribed to
+						// append the "eventId" channel to their list of channels
+					
+					// Send a push notification to "eventId" channel
+					
+					// subscribe  user to  push notifications from this event
+//					PushService.subscribe(ComposeActivity.this, eventId, EventListActivity.class);
+				}
+			});
+			
+			Log.d("DEBUG", "Finished");
+			
+			
 			// Instead of going back to the EventListActivity, we are going to
 			// start a new activity that shows the newly created event
 			Intent i = new Intent(ComposeActivity.this,

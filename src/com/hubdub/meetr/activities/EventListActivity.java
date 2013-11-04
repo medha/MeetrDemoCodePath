@@ -1,6 +1,7 @@
 package com.hubdub.meetr.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,8 +24,15 @@ import android.widget.ListView;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class EventListActivity extends Activity {
 
@@ -44,6 +52,50 @@ public class EventListActivity extends Activity {
 		ParseObject.registerSubclass(Events.class);
 		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
+		
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		String userId = currentUser.getObjectId();
+		ParseInstallation.getCurrentInstallation().put("userId", userId);
+		ParseInstallation.getCurrentInstallation().saveInBackground();
+		/* Add the user's facebook id as a separate column
+		 * Get the id from the user table's user object's profile column
+		 * Parse the column and get the facebook id.
+		 */
+		JSONObject profile = currentUser.getJSONObject("profile");
+		try {
+			String fbId = profile.getString("facebookId");
+			ParseInstallation.getCurrentInstallation().put("fbId", fbId);
+			ParseInstallation.getCurrentInstallation().saveInBackground();					
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String fbId="527736559";
+		final String eventId = "test";
+		ParseQuery<ParseInstallation> queryInstallation = ParseInstallation.getQuery();
+		//query.whereEqualTo("fbId", fbId);
+		queryInstallation.findInBackground(new FindCallback<ParseInstallation>() {
+			@Override
+			public void done(List<ParseInstallation> objects, ParseException e) {
+			    if (objects.size() == 0) {
+			      Log.d("score", "The getFirst request failed.");
+			    } else {
+			    	Log.d("score", "The getFirst succeeded.");
+			    	ParseInstallation queryResult = objects.get(0);
+			    	JSONArray channelData = (JSONArray) queryResult.get("channels");
+			    	int length = channelData.length();
+			    	try {
+						channelData.put(length, "user_"+eventId);
+					} catch (JSONException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					queryResult.put("channels", channelData);
+			    }
+			}
+		});
+			
 		loadData();
 	}
 
