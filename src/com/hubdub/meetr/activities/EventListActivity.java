@@ -1,6 +1,7 @@
 package com.hubdub.meetr.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,16 +16,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
+import com.haarman.listviewanimations.itemmanipulation.SwipeDismissAdapter;
+import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 public class EventListActivity extends Activity {
@@ -60,8 +67,7 @@ public class EventListActivity extends Activity {
 			ParseInstallation.getCurrentInstallation().put("fbId", fbId);
 			ParseInstallation.getCurrentInstallation().saveInBackground();					
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d("ERROR", e.toString());
 		}
 		
 		loadData();
@@ -90,28 +96,37 @@ public class EventListActivity extends Activity {
 		}
 	}
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-
-		listView.setAdapter(new CustomArrayAdapter(this));
-	}
-
 	/*
 	 * Functon to Load data into the listview
 	 */
 	public void loadData() {
-		adapter = new CustomArrayAdapter(this);
+		
 		listView = (ListView) findViewById(R.id.lvItems);
 		
-		listView.setDivider(this.getResources().getDrawable(R.drawable.transperent_color));
-		listView.setDividerHeight(20);
+		List<Events> events = new ArrayList<Events>();
+		ParseQuery<Events> query = new ParseQuery<Events>("Events");
+		query.whereEqualTo("User", ParseUser.getCurrentUser());
+		query.orderByDescending("EventDate");
+		try {
+			events = query.find();
+			adapter = new CustomArrayAdapter(this, new ArrayList<Events>(events));
+		} catch (ParseException e) {
+			Log.d("ERROR", e.toString());
+			adapter = new CustomArrayAdapter(this, new ArrayList<Events>());
+		}
+		
+		// Assign the ListView to the AnimationAdapter and vice versa
+		SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(adapter);
+		swingBottomInAnimationAdapter.setAbsListView(listView);
+		
+		listView.setAdapter(swingBottomInAnimationAdapter);
+		
 
-		// listView.setOnCardClickListener(new CardListView.CardClickListener()
-		// {
-		// @Override
-		// public void onCardClick(int index, CardBase card, View view) {
+		listView.setAdapter(swingBottomInAnimationAdapter);
+		
+		listView.setDivider(this.getResources().getDrawable(R.drawable.transperent_color));
+		listView.setDividerHeight(15);
+		listView.setPadding(0,10,0,10);
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> adapter, View item, int pos,
@@ -133,8 +148,7 @@ public class EventListActivity extends Activity {
 				startActivity(i);
 			}
 		});
-
-		listView.setAdapter(adapter);
+		adapter.addAll(events);
 	}
 
 	/*
@@ -172,7 +186,7 @@ public class EventListActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-			adapter.loadObjects();
+			adapter.notifyDataSetChanged();
 			listView.setAdapter(adapter);
 		}
 	}
