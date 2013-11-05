@@ -24,7 +24,10 @@ import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
 import com.parse.Parse;
+
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 public class EventListActivity extends Activity {
 
@@ -44,6 +47,24 @@ public class EventListActivity extends Activity {
 		ParseObject.registerSubclass(Events.class);
 		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		String userId = currentUser.getObjectId();
+		ParseInstallation.getCurrentInstallation().put("userId", userId);
+		ParseInstallation.getCurrentInstallation().saveInBackground();
+		/* Add the user's facebook id as a separate column
+		 * Get the id from the user table's user object's profile column
+		 * Parse the column and get the facebook id.
+		 */
+		JSONObject profile = currentUser.getJSONObject("profile");
+		try {
+			String fbId = profile.getString("facebookId");
+			ParseInstallation.getCurrentInstallation().put("fbId", fbId);
+			ParseInstallation.getCurrentInstallation().saveInBackground();					
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		loadData();
 	}
 

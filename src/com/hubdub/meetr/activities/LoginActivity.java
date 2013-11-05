@@ -31,8 +31,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.login_activity);
-		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
-				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
+	
 		// Set your Facebook App Id in strings.xml
 		ParseFacebookUtils.initialize(getString(R.string.app_id));
 		ParseAnalytics.trackAppOpened(getIntent());

@@ -122,6 +122,5 @@ public class EventDetailActivity extends Activity {
 		toast.show();
 
 	}
-
-	
+		
 }
