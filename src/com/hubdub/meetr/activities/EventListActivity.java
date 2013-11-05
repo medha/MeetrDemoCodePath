@@ -57,19 +57,20 @@ public class EventListActivity extends Activity {
 		String userId = currentUser.getObjectId();
 		ParseInstallation.getCurrentInstallation().put("userId", userId);
 		ParseInstallation.getCurrentInstallation().saveInBackground();
-		/* Add the user's facebook id as a separate column
-		 * Get the id from the user table's user object's profile column
-		 * Parse the column and get the facebook id.
+		/*
+		 * Add the user's facebook id as a separate column Get the id from the
+		 * user table's user object's profile column Parse the column and get
+		 * the facebook id.
 		 */
 		JSONObject profile = currentUser.getJSONObject("profile");
 		try {
 			String fbId = profile.getString("facebookId");
 			ParseInstallation.getCurrentInstallation().put("fbId", fbId);
-			ParseInstallation.getCurrentInstallation().saveInBackground();					
+			ParseInstallation.getCurrentInstallation().saveInBackground();
 		} catch (JSONException e) {
 			Log.d("ERROR", e.toString());
 		}
-		
+
 		loadData();
 	}
 
@@ -100,13 +101,13 @@ public class EventListActivity extends Activity {
 	 * Functon to Load data into the listview
 	 */
 	public void loadData() {
-		
+
 		listView = (ListView) findViewById(R.id.lvItems);
-		
+
 		List<Events> events = new ArrayList<Events>();
-		ParseQuery<Events> query = new ParseQuery<Events>("Events");
-		query.whereEqualTo("User", ParseUser.getCurrentUser());
-		query.orderByDescending("EventDate");
+
+		ParseQuery<Events> query = fetchEventItems();
+
 		try {
 			events = query.find();
 			adapter = new CustomArrayAdapter(this, new ArrayList<Events>(events));
@@ -114,19 +115,20 @@ public class EventListActivity extends Activity {
 			Log.d("ERROR", e.toString());
 			adapter = new CustomArrayAdapter(this, new ArrayList<Events>());
 		}
-		
+
 		// Assign the ListView to the AnimationAdapter and vice versa
-		SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(adapter);
+		SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(
+				adapter);
 		swingBottomInAnimationAdapter.setAbsListView(listView);
-		
-		listView.setAdapter(swingBottomInAnimationAdapter);
-		
 
 		listView.setAdapter(swingBottomInAnimationAdapter);
-		
-		listView.setDivider(this.getResources().getDrawable(R.drawable.transperent_color));
+
+		listView.setAdapter(swingBottomInAnimationAdapter);
+
+		listView.setDivider(this.getResources().getDrawable(
+				R.drawable.transperent_color));
 		listView.setDividerHeight(15);
-		listView.setPadding(0,10,0,10);
+		listView.setPadding(0, 10, 0, 10);
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> adapter, View item, int pos,
@@ -149,6 +151,33 @@ public class EventListActivity extends Activity {
 			}
 		});
 		adapter.addAll(events);
+	}
+
+	private ParseQuery<Events> fetchEventItems() {
+		String fbId = "";
+		// Here we can configure a ParseQuery to our heart's desire.
+		try {
+			fbId = ParseUser.getCurrentUser().getJSONObject("profile")
+					.getString("facebookId");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*
+		 * Doing a join query here. Requesting all rows where the event is
+		 * created by this user and also where this user is an invited guest.
+		 */
+		ParseQuery<Events> queryObjId = new ParseQuery<Events>("Events");
+		queryObjId.whereEqualTo("User", ParseUser.getCurrentUser());
+		ParseQuery<Events> queryFbId = new ParseQuery<Events>("Events");
+		queryFbId.whereEqualTo("FbGuestList", fbId);
+		List<ParseQuery<Events>> queries = new ArrayList<ParseQuery<Events>>();
+		queries.add(queryObjId);
+		queries.add(queryFbId);
+		ParseQuery<Events> query = new ParseQuery<Events>("Events");
+		query = ParseQuery.or(queries);
+		query.orderByDescending("updatedAt");
+		return query;
 	}
 
 	/*

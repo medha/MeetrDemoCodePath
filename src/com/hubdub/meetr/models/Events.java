@@ -1,5 +1,6 @@
 package com.hubdub.meetr.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.JSONArray;
@@ -82,5 +83,12 @@ public class Events extends ParseObject {
 		return getString("objectId");
 		
 	}
-
+	
+	public void setFbGuestList(ArrayList<String> fbGuestList) {
+		put("FbGuestList", fbGuestList);
+	}
+	
+	public ArrayList<String> getFbGuestList() {
+		return getFbGuestList();
+	}
 }

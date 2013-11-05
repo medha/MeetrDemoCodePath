@@ -94,5 +94,6 @@ public class CustomArrayAdapter extends com.haarman.listviewanimations.ArrayAdap
 
 		return view;
 	}
+	
 
 }

@@ -74,7 +74,7 @@
         </receiver>
         <receiver android:name="com.hubdub.meetr.activities.MyCustomReceiver" >
             <intent-filter>
-                <action android:name="com.hubdub.meetr.receiver.activities.UPDATE_STATUS" />
+                <action android:name="com.hubdub.meetr.activities.UPDATE_STATUS" />
             </intent-filter>
         </receiver>
     </application>

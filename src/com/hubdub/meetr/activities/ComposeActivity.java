@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,6 +83,8 @@ public class ComposeActivity extends FragmentActivity implements
 	private LocationManager locationManager;
 	private Location pickPlaceForLocationWhenSessionOpened = null;
 	private boolean canGetLocation;
+	private ArrayList <String> fbGuestList = new ArrayList<String>();
+
 	private static final Location SAN_FRANCISCO_LOCATION = new Location("") {
 		{
 			setLatitude(37.7750);
@@ -189,10 +193,12 @@ public class ComposeActivity extends FragmentActivity implements
 		if (selection != null && selection.size() > 0) {
 			ArrayList<String> names = new ArrayList<String>();
 			ArrayList<String> selectedStr = new ArrayList<String>();
+			
 
 			for (GraphUser user : selection) {
 				names.add(user.getName());
 				selectedStr.add(user.getId());
+				fbGuestList.add(user.getId());
 			}
 			results = TextUtils.join(", ", names);
 			selectedString = TextUtils.join(", ", selectedStr);
@@ -295,7 +301,7 @@ public class ComposeActivity extends FragmentActivity implements
 
 					JSONArray guestList = event.getGuestList();
 					/* Setup the push service to call EventListActivity class */
-					PushService.subscribe(getBaseContext(), eventId, com.hubdub.meetr.activities.EventListActivity.class);
+					PushService.subscribe(getBaseContext(), "event_"+eventId, com.hubdub.meetr.activities.EventListActivity.class);
 					
 					for(int i=0; i<guestList.length(); i++) {
 						try {
@@ -303,10 +309,11 @@ public class ComposeActivity extends FragmentActivity implements
 							JSONObject guest = (JSONObject) guestList.get(i);
 							String fbId = (String) guest.get("id");
 							String fbName = (String) guest.get("name");
+							fbGuestList.add(fbId);
 							
 							/* Craft the push notification */
 							JSONObject data = new JSONObject ();
-							data.put("action", ".com.hubdb.meetr.activities.UpdateEvent");
+							data.put("action", "com.hubdub.meetr.activities.UPDATE_STATUS");
 							data.put("title", "Meetr");
 							data.put("eventId", eventId);
 							/* Get the user name from current user */
@@ -328,7 +335,16 @@ public class ComposeActivity extends FragmentActivity implements
 					}
 				}
 			});
+			try {
+				fbGuestList.add(ParseUser.getCurrentUser().getJSONObject("profile").getString("facebookId"));
+			} catch (JSONException e1) {
+					e1.printStackTrace();
+			}
+			
+			fbGuestList = new ArrayList<String>(new HashSet<String>(fbGuestList));
+			event.setFbGuestList(fbGuestList);
 			event.saveEventually();
+			
 			Log.d("DEBUG", "about to save event");
 			
 			// Instead of going back to the EventListActivity, we are going to
