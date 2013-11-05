@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -15,6 +15,21 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="Theme.Meetr" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/Theme.Meetr.ActionBar</item>
+    </style>
+
+    <style name="Theme.Meetr.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#5D79B4</item>
+        <item name="android:titleTextStyle">@style/Theme.Meetr.ActionBar.TitleTextStyle</item>
+    </style>
+    
+    <style name="Theme.Meetr.ActionBar.TitleTextStyle" parent="android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

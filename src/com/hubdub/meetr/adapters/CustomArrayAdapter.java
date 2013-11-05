@@ -12,7 +12,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
-public class CustomArrayAdapter extends ParseQueryAdapter<Events> {
+public class CustomArrayAdapter extends ParseQueryAdapter<Events>{
 
 	public CustomArrayAdapter(Context context) {
 		super(context, new ParseQueryAdapter.QueryFactory<Events>() {

@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:scrollbarStyle="outsideOverlay" >
-
+    android:layout_gravity="center"
+    android:background="@drawable/dolores2"
+    android:gravity="center"
+    android:orientation="vertical" >
+    
     <Button
         android:id="@+id/loginbutton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/loginwithfacebook" />
-    
-</LinearLayout>
+        android:layout_alignLeft="@+id/tvSubheading"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/tvSubheading"
+        android:layout_marginBottom="38dp"
+        android:background="@drawable/com_facebook_button_blue"
+        android:text="@string/loginwithfacebook"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/meetr"
+        android:textStyle="bold"
+        android:layout_marginTop="38dp" />
+
+    <TextView
+        android:id="@+id/tvSubheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ivLogo"
+        android:layout_alignRight="@+id/ivLogo"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="Hanging out with friends is now easier than ever."
+        android:textColor="#ffffff"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tvTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvSubheading"
+        android:layout_centerHorizontal="true"
+        android:text="plan. experience. relive."
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

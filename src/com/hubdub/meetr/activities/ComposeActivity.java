@@ -5,17 +5,19 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,14 +47,14 @@ import com.hubdub.meetr.fragments.DatePickerFragment;
 import com.hubdub.meetr.fragments.TimePickerFragment;
 import com.hubdub.meetr.fragments.TimePickerFragment.TimePickedListener;
 import com.hubdub.meetr.models.Events;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
 import com.parse.SaveCallback;
 
 @SuppressLint({ "SimpleDateFormat", "DefaultLocale" })
@@ -78,6 +80,7 @@ public class ComposeActivity extends FragmentActivity implements
 	private Location lastKnownLocation;
 	private LocationManager locationManager;
 	private Location pickPlaceForLocationWhenSessionOpened = null;
+	private boolean canGetLocation;
 	private static final Location SAN_FRANCISCO_LOCATION = new Location("") {
 		{
 			setLatitude(37.7750);
@@ -85,6 +88,8 @@ public class ComposeActivity extends FragmentActivity implements
 		}
 	};
 	private static final int SEARCH_RADIUS_METERS = 1000*50; //50km
+	private static final long MIN_TIME_BW_UPDATES = 10;
+	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +121,9 @@ public class ComposeActivity extends FragmentActivity implements
 		ensureOpenSession();
 		
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		
+		ActionBar bar=getActionBar();
+	    bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#5D79B4")));
 	}
 
 	/*
@@ -270,8 +278,7 @@ public class ComposeActivity extends FragmentActivity implements
 	public void onEventCreateAction(View v) {
 		if (mEventNameInput.getText().length() > 0) {
 			final Events event = new Events();
-			ParseUser currentUser = ParseUser.getCurrentUser();
-
+			final ParseUser currentUser = ParseUser.getCurrentUser();
 			event.setEventName(mEventNameInput.getText().toString());
 			event.setEventDescription(tvDescriptionBody.getText().toString());
 			event.setEventDate(eventDate);
@@ -280,65 +287,49 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setLocation(btLocation.getText().toString());
 			event.setGuestList(guestListArray);
 			event.setCurrentUser(currentUser);
-			Log.d("DEBUG", "about to save event");
-			
 			event.saveInBackground(new SaveCallback() {
 				@Override
 				public void done(ParseException e) {
 					final String eventId = event.getObjectId();
+					final String eventName = event.getEventName();
 
-					// get the guestlist
 					JSONArray guestList = event.getGuestList();
+					/* Setup the push service to call EventListActivity class */
+					PushService.subscribe(getBaseContext(), eventId, com.hubdub.meetr.activities.EventListActivity.class);
 					
 					for(int i=0; i<guestList.length(); i++) {
 						try {
 							/* Get facebook id for each guest */
 							JSONObject guest = (JSONObject) guestList.get(i);
 							String fbId = (String) guest.get("id");
-							Log.d("debug-clusterfuck", fbId);
+							String fbName = (String) guest.get("name");
+							
+							/* Craft the push notification */
+							JSONObject data = new JSONObject ();
+							data.put("action", ".com.hubdb.meetr.activities.UpdateEvent");
+							data.put("title", "Meetr");
+							data.put("eventId", eventId);
+							/* Get the user name from current user */
+							JSONObject userName = (JSONObject) currentUser.getJSONObject("profile");
+							data.put("alert", userName.get("name") + "has invited you to " + eventName);
+							
+							/* Find the guests from our list and send out a push notification to each */
+							ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+							pushQuery.whereEqualTo("fbId", fbId);
+							ParsePush push = new ParsePush();
+							push.setQuery(pushQuery);
+							push.setData(data);
+							push.sendInBackground();
 														
-							ParseQuery<ParseObject> query = ParseQuery.getQuery("Installation");
-							query.whereEqualTo("fbId", fbId);
-							query.findInBackground(new FindCallback<ParseObject>() {
-								public void done(List<ParseObject> object, ParseException e) {
-								    if (object == null) {
-								      Log.d("score", "The getFirst request failed.");
-								    } else {
-									    	ParseObject queryResult = object.get(0);
-									    	JSONArray channelData = (JSONArray) queryResult.get("channels");
-											int length = channelData.length();
-											try {
-												channelData.put(length, "user_" + eventId);
-											} catch (JSONException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
-											queryResult.put("channels", channelData);
-											queryResult.saveInBackground();			
-									      Log.d("score", "Retrieved the object.");
-									    }
-									  }
-									});
-							System.out.println(guest);
 						} catch (JSONException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
-					
-					// for each guest in the guest list
-						// get the list of channels they are subscribed to
-						// append the "eventId" channel to their list of channels
-					
-					// Send a push notification to "eventId" channel
-					
-					// subscribe  user to  push notifications from this event
-//					PushService.subscribe(ComposeActivity.this, eventId, EventListActivity.class);
 				}
 			});
-			
-			Log.d("DEBUG", "Finished");
-			
+			event.saveEventually();
+			Log.d("DEBUG", "about to save event");
 			
 			// Instead of going back to the EventListActivity, we are going to
 			// start a new activity that shows the newly created event
@@ -432,14 +423,82 @@ public class ComposeActivity extends FragmentActivity implements
 		// startActivityForResult(i, PICK_PLACE_ACTIVITY );
 		findCurrentLocation();
 	}
+	
+	public Location getLocation() {
+	    Location location = null;
+		try {
+	        locationManager = (LocationManager) this.getBaseContext().getSystemService(LOCATION_SERVICE);
+
+	        // getting GPS status
+	        boolean isGPSEnabled = locationManager
+	                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+	        // getting network status
+	        boolean isNetworkEnabled = locationManager
+	                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+	        if (!isGPSEnabled && !isNetworkEnabled) {
+	            // no network provider is enabled
+	        } else {
+	            this.canGetLocation = true;
+	            double latitude;
+				double longitude;
+				if (isNetworkEnabled) {
+	                locationManager.requestLocationUpdates(
+	                        LocationManager.NETWORK_PROVIDER,
+	                        MIN_TIME_BW_UPDATES,
+	                        MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+	                Log.d("Network", "Network Enabled");
+	                if (locationManager != null) {
+	                    location = locationManager
+	                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+	                    if (location != null) {
+	                        latitude = location.getLatitude();
+	                        longitude = location.getLongitude();
+	                    }
+	                }
+	            }
+	            // if GPS Enabled get lat/long using GPS Services
+	            if (isGPSEnabled) {
+	                if (location == null) {
+	                    locationManager.requestLocationUpdates(
+	                            LocationManager.GPS_PROVIDER,
+	                            MIN_TIME_BW_UPDATES,
+	                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+	                    Log.d("GPS", "GPS Enabled");
+	                    if (locationManager != null) {
+	                        location = locationManager
+	                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+	                        if (location != null) {
+	                            latitude = location.getLatitude();
+	                            longitude = location.getLongitude();
+	                        }
+	                    }
+	                }
+	            }
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return location;
+	}
 
 	private void findCurrentLocation() {
 		try {
+			Location location = getLocation();
+			
+			if (location != null) {
+				lastKnownLocation = location;
+			}
+			
 			if (lastKnownLocation == null) {
 				Criteria criteria = new Criteria();
 				String bestProvider = locationManager.getBestProvider(criteria,
 						false);
 				if (bestProvider != null) {
+//					lastKnownLocation = SAN_FRANCISCO_LOCATION;
 					lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
 				}
 			}

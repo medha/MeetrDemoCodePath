@@ -1,19 +1,14 @@
 package com.hubdub.meetr.activities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -37,10 +32,12 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		ActionBar actionBar = getActionBar();
+		actionBar.hide();
 
 		setContentView(R.layout.login_activity);
-		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
-				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
+	
 		// Set your Facebook App Id in strings.xml
 		ParseFacebookUtils.initialize(getString(R.string.app_id));
 		ParseAnalytics.trackAppOpened(getIntent());

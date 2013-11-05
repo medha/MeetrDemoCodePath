@@ -1,7 +1,6 @@
 package com.hubdub.meetr.activities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,21 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
 import com.hubdub.meetr.models.Events;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.Parse;
-import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 public class EventListActivity extends Activity {
 
@@ -52,7 +45,7 @@ public class EventListActivity extends Activity {
 		ParseObject.registerSubclass(Events.class);
 		Parse.initialize(this, "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
-		
+
 		ParseUser currentUser = ParseUser.getCurrentUser();
 		String userId = currentUser.getObjectId();
 		ParseInstallation.getCurrentInstallation().put("userId", userId);
@@ -71,31 +64,6 @@ public class EventListActivity extends Activity {
 			e.printStackTrace();
 		}
 		
-		String fbId="527736559";
-		final String eventId = "test";
-		ParseQuery<ParseInstallation> queryInstallation = ParseInstallation.getQuery();
-		//query.whereEqualTo("fbId", fbId);
-		queryInstallation.findInBackground(new FindCallback<ParseInstallation>() {
-			@Override
-			public void done(List<ParseInstallation> objects, ParseException e) {
-			    if (objects.size() == 0) {
-			      Log.d("score", "The getFirst request failed.");
-			    } else {
-			    	Log.d("score", "The getFirst succeeded.");
-			    	ParseInstallation queryResult = objects.get(0);
-			    	JSONArray channelData = (JSONArray) queryResult.get("channels");
-			    	int length = channelData.length();
-			    	try {
-						channelData.put(length, "user_"+eventId);
-					} catch (JSONException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					}
-					queryResult.put("channels", channelData);
-			    }
-			}
-		});
-			
 		loadData();
 	}
 
@@ -121,46 +89,46 @@ public class EventListActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		
+
 		listView.setAdapter(new CustomArrayAdapter(this));
 	}
-	
+
 	/*
 	 * Functon to Load data into the listview
 	 */
-	public void loadData(){
+	public void loadData() {
 		adapter = new CustomArrayAdapter(this);
 		listView = (ListView) findViewById(R.id.lvItems);
-		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> adapter, View item,
-					int pos, long rowId) {
-				//Events event = (Events) adapter.getItemAtPosition(pos);
-				return false;
-			}
-		});
 		
+		listView.setDivider(this.getResources().getDrawable(R.drawable.transperent_color));
+		listView.setDividerHeight(20);
+
+		// listView.setOnCardClickListener(new CardListView.CardClickListener()
+		// {
+		// @Override
+		// public void onCardClick(int index, CardBase card, View view) {
+
 		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
 			public void onItemClick(AdapterView<?> adapter, View item, int pos,
 					long rowId) {
 				Events event = (Events) adapter.getItemAtPosition(pos);
-				JSONArray guestList = event.getGuestList();				
+				JSONArray guestList = event.getGuestList();
 
 				Bundle extras = new Bundle();
 				extras.putString("EventName", event.getEventName());
 				extras.putString("Description", event.getDescription());
 				extras.putLong("EventDate", event.getEventDate().getTime());
-				extras.putLong("EventTime", event.getEventTime().getTime());				
+				extras.putLong("EventTime", event.getEventTime().getTime());
 				extras.putString("GuestList", getStrGuestList(guestList));
 				extras.putString("Location", event.getLocation());
 
-				Intent i = new Intent(EventListActivity.this, EventDetailActivity.class);
+				Intent i = new Intent(EventListActivity.this,
+						EventDetailActivity.class);
 				i.putExtras(extras);
 				startActivity(i);
 			}
@@ -169,11 +137,10 @@ public class EventListActivity extends Activity {
 		listView.setAdapter(adapter);
 	}
 
-	
 	/*
 	 * Helper Function for the adapter
 	 */
-	public String getStrGuestList(JSONArray guestList){
+	public String getStrGuestList(JSONArray guestList) {
 		JSONObject childJSONObject;
 		ArrayList<String> names = new ArrayList<String>();
 		String results = "";
@@ -188,15 +155,14 @@ public class EventListActivity extends Activity {
 				}
 			}
 			results = TextUtils.join(", ", names);
-		}		
+		}
 		return results;
 	}
-	
 
 	/*
 	 * Helper functions for Menu/Action bar
 	 */
-	
+
 	public void composeEvent() {
 		Intent i = new Intent(this, ComposeActivity.class);
 		i.putExtra("dummyApiKey", "q1b2f3j4o5t6l1d2");
@@ -211,9 +177,12 @@ public class EventListActivity extends Activity {
 		}
 	}
 
-
-	/* Handle the event when changing orientation triggers restart of activity
-	 * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
+	/*
+	 * Handle the event when changing orientation triggers restart of activity
+	 * 
+	 * @see
+	 * android.app.Activity#onConfigurationChanged(android.content.res.Configuration
+	 * )
 	 */
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
