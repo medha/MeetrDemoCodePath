@@ -27,16 +27,16 @@ import com.facebook.widget.PickerFragment;
 import com.facebook.widget.PlacePickerFragment;
 import com.hubdub.meetr.R;
 
-// This class provides an example of an Activity that uses PlacePickerFragment to display a list of
+// This class provides an example of an EventActivity that uses PlacePickerFragment to display a list of
 // the places. It takes a layout-based approach to creating the PlacePickerFragment with the
 // desired parameters -- see PickFriendActivity in the FriendPickerSample project for an example of an
-// Activity creating a fragment (in this case a FriendPickerFragment) programmatically rather than
+// EventActivity creating a fragment (in this case a FriendPickerFragment) programmatically rather than
 // via XML layout.
 public class PickPlaceActivity extends FragmentActivity {
     PlacePickerFragment placePickerFragment;
 
     // A helper to simplify life for callers who want to populate a Bundle with the necessary
-    // parameters. A more sophisticated Activity might define its own set of parameters; our needs
+    // parameters. A more sophisticated EventActivity might define its own set of parameters; our needs
     // are simple, so we just populate what we want to pass to the PlacePickerFragment.
     public static void populateParameters(Intent intent, Location location, String searchText, int radius, boolean searchBar) {
         intent.putExtra(PlacePickerFragment.LOCATION_BUNDLE_KEY, location);

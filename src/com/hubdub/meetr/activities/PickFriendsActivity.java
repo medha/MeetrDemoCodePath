@@ -31,16 +31,16 @@ import com.hubdub.meetr.R;
 import com.hubdub.meetr.models.Events;
 import com.parse.ParseObject;
 
-// This class provides an example of an Activity that uses FriendPickerFragment to display a list of
+// This class provides an example of an EventActivity that uses FriendPickerFragment to display a list of
 // the user's friends. It takes a programmatic approach to creating the FriendPickerFragment with the
 // desired parameters -- see PickPlaceActivity in the PlacePickerSample project for an example of an
-// Activity creating a fragment (in this case a PlacePickerFragment) via XML layout rather than
+// EventActivity creating a fragment (in this case a PlacePickerFragment) via XML layout rather than
 // programmatically.
 public class PickFriendsActivity extends FragmentActivity {
     FriendPickerFragment friendPickerFragment;
 
     // A helper to simplify life for callers who want to populate a Bundle with the necessary
-    // parameters. A more sophisticated Activity might define its own set of parameters; our needs
+    // parameters. A more sophisticated EventActivity might define its own set of parameters; our needs
     // are simple, so we just populate what we want to pass to the FriendPickerFragment.
     public static void populateParameters(Intent intent, String userId, boolean multiSelect, boolean showTitleBar, String selectedString) {
         intent.putExtra(FriendPickerFragment.USER_ID_BUNDLE_KEY, userId);

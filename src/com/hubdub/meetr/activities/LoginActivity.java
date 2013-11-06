@@ -58,7 +58,7 @@ public class LoginActivity extends Activity {
 			showUserDetailsActivity();
 		}
 		
-		// Specify a Activity to handle all pushes by default.
+		// Specify a EventActivity to handle all pushes by default.
 		PushService.setDefaultPushCallback(this, EventListActivity.class);
 		
 		// Save the current installation.

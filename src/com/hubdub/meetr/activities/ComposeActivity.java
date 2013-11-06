@@ -287,6 +287,7 @@ public class ComposeActivity extends FragmentActivity implements
 			final ParseUser currentUser = ParseUser.getCurrentUser();
 			event.setEventName(mEventNameInput.getText().toString());
 			event.setEventDescription(tvDescriptionBody.getText().toString());
+			eventDate = setDateAndTime(eventDate, eventTime);
 			event.setEventDate(eventDate);
 			event.setEventTime(eventTime);
 			addSelectedFriends();
@@ -595,5 +596,21 @@ public class ComposeActivity extends FragmentActivity implements
 
 	@Override
 	public void onProviderDisabled(String provider) {
+	}
+	
+	public Date setDateAndTime(Date mEventDate, Date mEventTime) {
+		if(mEventDate != null && mEventTime != null) {  
+			Calendar cal = Calendar.getInstance();
+			  cal.setTime(mEventDate);
+			  int day = cal.get(Calendar.DAY_OF_MONTH);
+			  int month = cal.get(Calendar.MONTH);
+			  int year = cal.get(Calendar.YEAR);
+			  cal.setTime(mEventTime);
+			  int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+			  int minute = cal.get(Calendar.MINUTE);
+			  cal.set(year, month, day, hourOfDay, minute);
+			  return cal.getTime();
+		} else 
+			return null;
 	}
 }

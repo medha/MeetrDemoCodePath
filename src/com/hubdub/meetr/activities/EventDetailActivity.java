@@ -30,6 +30,9 @@ public class EventDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		String locationQuery = "";
+		String url = "";
+		
 		setContentView(R.layout.activity_event_detail);
 		
 		setupViews();
@@ -44,22 +47,26 @@ public class EventDetailActivity extends Activity {
 		String time = DateFormat.format("h:mm a", eventTime).toString();
 		String guestList = getIntent().getStringExtra("GuestList");
 		String location = i.getStringExtra("Location");
-		String locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
-		String url = "http://maps.googleapis.com/maps/api/staticmap?center="
-				+ locationQuery
-				+ "zoom=13&size=400x220&maptype=roadmap&markers=color:red%7Caddress="
-				+ locationQuery + "%7C&sensor=false";
+		if(location != null) { 
+			locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
+			url = "http://maps.googleapis.com/maps/api/staticmap?center="
+					+ locationQuery
+					+ "zoom=13&size=400x220&maptype=roadmap&markers=color:red%7Caddress="
+					+ locationQuery + "%7C&sensor=false";
+		}
 		
-		tvEventName.setText(eventName);
-		tvDescriptionBody.setText(eventDescription);
-		tvDateBody.setText(date);
-		tvTimeBody.setText(time);
-		tvGuestsBody.setText(guestList);
-		tvVenueBody.setText(location);
+		if(eventName != null) tvEventName.setText(eventName);
+		if(eventDescription != null) tvDescriptionBody.setText(eventDescription);
+		if(date != null) tvDateBody.setText(date);
+		if(time != null) tvTimeBody.setText(time);
+		if(guestList.length() > 0)  tvGuestsBody.setText(guestList); else tvGuestsBody.setText("Add friends to your events."); 
+		if(location != null) tvVenueBody.setText(location);
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
 		ImageLoader imageLoader = ImageLoader.getInstance();
-		imageLoader.init(config);
-		imageLoader.displayImage(url, ivEventImage);
+		if(imageLoader != null && location!= null) {
+			imageLoader.init(config);
+			imageLoader.displayImage(url, ivEventImage);
+		}
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
