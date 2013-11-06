@@ -40,7 +40,7 @@ public class TimelineActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_timeline);
+		setContentView(R.layout.fragment_event_timeline);
 
 		/*
 		 * Custom adapter serves up the Event feed for the current logged in
