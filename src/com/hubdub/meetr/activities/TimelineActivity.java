@@ -202,8 +202,10 @@ public class TimelineActivity extends Activity {
 			}
 			
 		});
- 
-		//Adapter.add(this.post) and refresh adapter
+	
+		EventActivity loadingObject = new EventActivity();
+		loadingObject.setObjectId(null);
+		eventActivity.add(0, loadingObject);
+		adapter.notifyDataSetChanged();
 	}
-
 }

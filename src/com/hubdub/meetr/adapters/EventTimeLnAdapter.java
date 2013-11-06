@@ -38,16 +38,22 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 		TextView tvPostBy = (TextView) view
 				.findViewById(com.hubdub.meetr.R.id.postBy);
 		
-		try {
-			ParseObject obj = event.getParseObject("postPtr");
-			ParseObject eventObj = event.getParseObject("activityFrom");
-			
-			tvPost.setText(obj.getString("post"));
-			tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//tvEventName.setText;
+		if(event.getObjectId() != null){
+			try {
+				ParseObject obj = event.getParseObject("postPtr");
+				ParseObject eventObj = event.getParseObject("activityFrom");
+				
+				tvPost.setText(obj.getString("post"));
+				tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			tvPost.setText("Loading...");
+			tvPostBy.setText("");
 		}
 
 
