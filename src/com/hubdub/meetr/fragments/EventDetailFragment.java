@@ -37,6 +37,12 @@ public class EventDetailFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		setupViews();
 	
+		
+		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_converge_placeholder, new ConvergeTimelineFragment());
+		ft.commit();
+		
+		
 		Intent i = getActivity().getIntent();
 		
 		String eventName = i.getStringExtra("EventName");
@@ -72,11 +78,7 @@ public class EventDetailFragment extends Fragment {
 		tvTimeBody.setText(time);
 		tvGuestsBody.setText(guestList);
 //		tvVenueBody.setText(location);
-		
-		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_converge_placeholder, new ConvergeTimelineFragment());
-		ft.commit();
-		
+
 	}
 	
 	private void setupViews() {
