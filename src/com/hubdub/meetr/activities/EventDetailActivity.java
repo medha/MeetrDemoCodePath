@@ -5,12 +5,14 @@ import android.app.ActionBar.Tab;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.hubdub.meetr.R;
+import com.hubdub.meetr.fragments.ConvergeTimelineFragment;
 import com.hubdub.meetr.fragments.EventDetailFragment;
 import com.hubdub.meetr.fragments.EventTimelineFragment;
 
@@ -24,6 +26,9 @@ public class EventDetailActivity extends FragmentActivity {
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_converge_placeholder, new ConvergeTimelineFragment());
+		ft.commit();
 	}
 	
 	private void setupTabs() {

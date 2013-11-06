@@ -7,6 +7,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,11 @@ public class EventDetailFragment extends Fragment {
 		tvTimeBody.setText(time);
 		tvGuestsBody.setText(guestList);
 //		tvVenueBody.setText(location);
+		
+		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_converge_placeholder, new ConvergeTimelineFragment());
+		ft.commit();
+		
 	}
 	
 	private void setupViews() {
