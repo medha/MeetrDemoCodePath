@@ -2,42 +2,57 @@ package com.hubdub.meetr.adapters;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hubdub.meetr.R;
-import com.hubdub.meetr.models.Activities;
+import com.hubdub.meetr.models.EventActivity;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 
+public class EventTimeLineAdapter extends ArrayAdapter<EventActivity> {
+	Context mContext;
 
-public class EventTimelineAdapter extends ArrayAdapter<Activities> {
-	private Context mContext;
-
-	public EventTimelineAdapter(Context context, ArrayList<Activities> activities) {
-		super(context, 0, activities);
-		
-		this.mContext = context;
+	public EventTimeLineAdapter(Context context, ArrayList<EventActivity> arrayList) {
+		super(context, 0, arrayList);
+		mContext = context;
 	}
-	
+
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
 		if (view == null) {
 			view = LayoutInflater.from(mContext).inflate(com.hubdub.meetr.R.layout.timeline_item, parent,false);
+			
 		}
 
-		Activities activity = getItem(position);
+		final EventActivity event = getItem(position);
+
+		// Do additional configuration before returning the View.
+		TextView tvPost = (TextView) view
+				.findViewById(com.hubdub.meetr.R.id.eventPost);
+		TextView tvPostBy = (TextView) view
+				.findViewById(com.hubdub.meetr.R.id.postBy);
 		
-		TextView tvPost = (TextView) view.findViewById(R.id.tvPost);
-		ImageView ivImageTimeline = (ImageView) view.findViewById(R.id.ivImageTimeline);
-		
-		tvPost.setText(activity.getDummyActivity());
-		
-		
+		try {
+			ParseObject obj = event.getParseObject("postPtr");
+			ParseObject eventObj = event.getParseObject("activityFrom");
+			
+			tvPost.setText(obj.getString("post"));
+			tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
 		return view;
 	}
+	
 
 }

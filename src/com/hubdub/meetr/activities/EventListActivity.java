@@ -16,13 +16,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
-import com.haarman.listviewanimations.itemmanipulation.SwipeDismissAdapter;
 import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.CustomArrayAdapter;
@@ -110,7 +107,7 @@ public class EventListActivity extends Activity {
 
 		try {
 			events = query.find();
-			adapter = new CustomArrayAdapter(this, new ArrayList<Events>(events));
+			adapter = new CustomArrayAdapter(this, new ArrayList<Events>());
 		} catch (ParseException e) {
 			Log.d("ERROR", e.toString());
 			adapter = new CustomArrayAdapter(this, new ArrayList<Events>());
@@ -135,6 +132,7 @@ public class EventListActivity extends Activity {
 				JSONArray guestList = event.getGuestList();
 
 				Bundle extras = new Bundle();
+				extras.putString("EventId", event.getObjectId());
 				extras.putString("EventName", event.getEventName());
 				extras.putString("Description", event.getDescription());
 				extras.putLong("EventDate", event.getEventDate().getTime());
@@ -144,6 +142,8 @@ public class EventListActivity extends Activity {
 
 				Intent i = new Intent(EventListActivity.this,
 						EventDetailActivity.class);
+//				Intent i = new Intent(EventListActivity.this,
+//						TimelineActivity.class);
 				i.putExtras(extras);
 				startActivity(i);
 			}
@@ -167,14 +167,20 @@ public class EventListActivity extends Activity {
 		 */
 		ParseQuery<Events> queryObjId = new ParseQuery<Events>("Events");
 		queryObjId.whereEqualTo("User", ParseUser.getCurrentUser());
+		//queryObjId.whereGreaterThanOrEqualTo("EventDate", Calendar.getInstance().getTime());
+		
+		
 		ParseQuery<Events> queryFbId = new ParseQuery<Events>("Events");
 		queryFbId.whereEqualTo("FbGuestList", fbId);
+		//queryFbId.whereGreaterThanOrEqualTo("EventDate", Calendar.getInstance().getTime());
+		
 		List<ParseQuery<Events>> queries = new ArrayList<ParseQuery<Events>>();
 		queries.add(queryObjId);
 		queries.add(queryFbId);
+		
 		ParseQuery<Events> query = new ParseQuery<Events>("Events");
 		query = ParseQuery.or(queries);
-		query.orderByDescending("updatedAt");
+		query.orderByDescending("EventDate");
 		return query;
 	}
 

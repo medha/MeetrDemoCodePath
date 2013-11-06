@@ -64,6 +64,13 @@
             android:label="@string/placesActivity"
             android:theme="@style/AppBaseTheme" >
         </activity>
+        
+          <activity
+            android:name="com.hubdub.meetr.activities.TimelineActivity"
+            android:label="TimeLine"
+            android:theme="@style/AppBaseTheme" >
+        </activity>
+        
 
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParseBroadcastReceiver" >

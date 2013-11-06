@@ -1,5 +1,7 @@
 package com.hubdub.meetr.activities;
 
+import com.hubdub.meetr.R;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,8 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-
-import com.hubdub.meetr.R;
 
 public class CameraActivity extends Activity {
 
@@ -36,6 +36,7 @@ public class CameraActivity extends Activity {
             imageView.setImageBitmap(photo);
         }  
     } 
+    
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

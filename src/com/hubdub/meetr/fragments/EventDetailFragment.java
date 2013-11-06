@@ -42,26 +42,35 @@ public class EventDetailFragment extends Fragment {
 		String eventDescription = i.getStringExtra("Description");
 		Long eventDate = i.getLongExtra("EventDate", 0);
 		Long eventTime = i.getLongExtra("EventTime", 0);
-		String date = DateFormat.format("dd MMM, yyyy", eventDate).toString();
+		String date = DateFormat.format("EEE, MMM dd", eventDate).toString();
 		String time = DateFormat.format("h:mm a", eventTime).toString();
 		String guestList = i.getStringExtra("GuestList");
 		String location = i.getStringExtra("Location");
-		String locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
-		String url = "http://maps.googleapis.com/maps/api/staticmap?center="
-				+ locationQuery
-				+ "zoom=13&size=400x120&maptype=roadmap&markers=color:red%7Caddress="
-				+ locationQuery + "%7C&sensor=false";
+		if( location != null) {
+			String locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
+			String url = "http://maps.googleapis.com/maps/api/staticmap?center="
+					+ locationQuery
+					+ "zoom=13&size=400x120&maptype=roadmap&markers=color:red%7Caddress="
+					+ locationQuery + "%7C&sensor=false";
+			ivEventImage.setVisibility(View.VISIBLE);
+			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
+			ImageLoader imageLoader = ImageLoader.getInstance();
+			imageLoader.init(config);
+			imageLoader.displayImage(url, ivEventImage);
+			
+			String[] locationSplit = location.split("\n");
+			tvVenueBody.setText(locationSplit[0] + ", " + locationSplit[1]);
+		} else {
+			tvVenueBody.setText("No location set");
+			ivEventImage.setVisibility(View.GONE);
+		}
 		
 		tvEventName.setText(eventName);
 		tvDescriptionBody.setText(eventDescription);
 		tvDateBody.setText(date);
 		tvTimeBody.setText(time);
 		tvGuestsBody.setText(guestList);
-		tvVenueBody.setText(location);
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
-		ImageLoader imageLoader = ImageLoader.getInstance();
-		imageLoader.init(config);
-		imageLoader.displayImage(url, ivEventImage);
+//		tvVenueBody.setText(location);
 	}
 	
 	private void setupViews() {
