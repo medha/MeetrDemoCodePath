@@ -15,10 +15,10 @@ import com.hubdub.meetr.models.EventActivity;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 
-public class EventTimeLineAdapter extends ArrayAdapter<EventActivity> {
+public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 	Context mContext;
 
-	public EventTimeLineAdapter(Context context, ArrayList<EventActivity> arrayList) {
+	public EventTimeLnAdapter(Context context, ArrayList<EventActivity> arrayList) {
 		super(context, 0, arrayList);
 		mContext = context;
 	}
@@ -39,15 +39,12 @@ public class EventTimeLineAdapter extends ArrayAdapter<EventActivity> {
 				.findViewById(com.hubdub.meetr.R.id.postBy);
 		
 		try {
-			ParseObject obj = event.getParseObject("postPtr").fetch();
-			ParseObject eventObj = event.getParseObject("activityFrom").fetch();
+			ParseObject obj = event.getParseObject("postPtr");
+			ParseObject eventObj = event.getParseObject("activityFrom");
 			
 			tvPost.setText(obj.getString("post"));
 			tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
 			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

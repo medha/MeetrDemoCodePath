@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.adapters.EventTimeLineAdapter;
+import com.hubdub.meetr.adapters.EventTimeLnAdapter;
 import com.hubdub.meetr.models.EventActivity;
 import com.hubdub.meetr.models.Posts;
 import com.parse.FindCallback;
@@ -32,7 +32,7 @@ import com.parse.SaveCallback;
 public class TimelineActivity extends Activity {
 
 	private static final int REQUEST_CODE = 1;
-	private EventTimeLineAdapter adapter;
+	private EventTimeLnAdapter adapter;
 	private ListView listView;
 	private String eventId;
 	List<EventActivity> eventActivity = new ArrayList<EventActivity>();
@@ -92,7 +92,7 @@ public class TimelineActivity extends Activity {
 				@Override
 				public void done(List<EventActivity> object, ParseException e) {
 					eventActivity = object;
-					adapter = new EventTimeLineAdapter(TimelineActivity.this, new ArrayList<EventActivity>());
+					adapter = new EventTimeLnAdapter(TimelineActivity.this, new ArrayList<EventActivity>());
 					listView.setAdapter(adapter);
 					adapter.addAll(eventActivity);
 				}
