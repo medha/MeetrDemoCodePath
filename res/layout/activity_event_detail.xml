@@ -1,121 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/card_background_white" >
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/tvEventName"
+    <RelativeLayout
+        android:id="@+id/rlForEventDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:textSize="20sp" />
-    
-    <TextView
-        android:id="@+id/tvRsvp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/card_background_white" >
+
+        <TextView
+        android:id="@+id/eventName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/tvDescriptionBody"
-        android:layout_alignTop="@+id/tvEventName"
-        android:text="Yes" />
-    
-    <ImageView
-        android:id="@+id/ivEventImage"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/tvEventName"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="5dp"
-        android:background="@android:color/transparent" />
-    <TextView
-        android:id="@+id/tvDescriptionLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvEventName"
-        android:layout_below="@+id/ivEventImage"
-        android:layout_marginTop="10dp"
-        android:text="What:" />
-    
-    <TextView
-        android:id="@+id/tvDescriptionBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/tvDescriptionLabel"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_toRightOf="@+id/tvVenueLabel" />
+        android:text="@string/label_eventName"
+        android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/tvDateLabel"
+        <TextView
+            android:id="@+id/eventDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/eventName"
+            android:layout_toRightOf="@+id/ivTimeDate"
+            android:layout_marginTop="2dp"
+            android:layout_alignTop="@+id/ivTimeDate"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="12 Dec" />
+
+        <TextView
+            android:id="@+id/eventTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/eventDate"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@+id/eventDate"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="4:00 PM" />
+
+        <ImageView
+            android:id="@+id/ivTimeDate"
+            android:layout_width="25dp"
+            android:layout_height="20dp"
+            android:layout_alignLeft="@+id/eventName"
+            android:layout_below="@+id/eventName"
+            android:src="@drawable/time_date" 
+            android:layout_marginTop="3dp"/>
+
+        <ImageView
+            android:id="@+id/ivMapPin"
+            android:layout_width="25dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/eventDate"
+            android:layout_alignLeft="@+id/ivTimeDate"
+            android:src="@drawable/pin"
+            android:layout_marginTop="3dp" />
+
+        <ImageView
+            android:id="@+id/ivFriends"
+            android:layout_width="25dp"
+            android:layout_height="15dp"
+            android:layout_below="@+id/tvLocation"
+            android:layout_alignLeft="@+id/ivMapPin"
+            android:src="@drawable/friend" 
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tvFriendsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLocation"
+            android:layout_alignLeft="@+id/tvLocation"
+            android:layout_toRightOf="@+id/ivFriends"
+            android:layout_alignTop="@+id/ivFriends"
+            android:paddingBottom="8dp"
+            android:text="Amanda, Robert, Carthy, Katty and NyanCat are going."
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#575757"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/eventDate"
+            android:layout_below="@+id/eventDate"
+            android:layout_alignTop="@+id/ivMapPin"
+            android:layout_toRightOf="@+id/ivMapPin"
+            android:text="1575 Tenaka Place, Apt C-2, Sunnyvale, CA, hsiludhal suhf, ajbsfliugsfiug asf, ajsifbiluasf"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#575757"
+            android:textSize="13sp" />
+        <!--  
+        <TextView
+            android:id="@+id/tvEventName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:hint="Hey"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/ivEventImage"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tvEventName"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:id="@+id/tvDescriptionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvEventName"
+            android:layout_below="@+id/ivEventImage"
+            android:layout_marginTop="10dp"
+            android:text="What:" />
+
+        <TextView
+            android:id="@+id/tvDescriptionBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tvDescriptionLabel"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/tvVenueLabel" />
+
+        <TextView
+            android:id="@+id/tvDateLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvDescriptionLabel"
+            android:layout_below="@+id/tvDescriptionBody"
+            android:layout_marginTop="5dp"
+            android:text="Date:" />
+
+        <TextView
+            android:id="@+id/tvDateBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvDateLabel"
+            android:layout_alignLeft="@+id/tvDescriptionBody"
+            android:layout_alignRight="@+id/tvDescriptionBody" />
+
+        <TextView
+            android:id="@+id/tvTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvDateLabel"
+            android:layout_below="@+id/tvDateLabel"
+            android:layout_marginTop="15dp"
+            android:text="Time:" />
+
+        <TextView
+            android:id="@+id/tvTimeBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTimeLabel"
+            android:layout_alignLeft="@+id/tvDateBody"
+            android:layout_alignRight="@+id/tvDateBody" />
+
+        <TextView
+            android:id="@+id/tvGuestsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvTimeLabel"
+            android:layout_below="@+id/tvTimeLabel"
+            android:layout_marginTop="15dp"
+            android:text="Who:" />
+
+        <TextView
+            android:id="@+id/tvGuestsBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvGuestsLabel"
+            android:layout_alignLeft="@+id/tvTimeBody"
+            android:layout_alignRight="@+id/tvTimeBody" />
+
+        <TextView
+            android:id="@+id/tvVenueLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvGuestsLabel"
+            android:layout_below="@+id/tvGuestsLabel"
+            android:layout_marginTop="15dp"
+            android:text="Where:" />
+
+        <TextView
+            android:id="@+id/tvVenueBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvVenueLabel"
+            android:layout_alignBottom="@+id/tvVenueLabel"
+            android:layout_alignLeft="@+id/tvGuestsBody"
+            android:layout_alignRight="@+id/tvGuestsBody"/>-->
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/flEventDetailPlaceholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvDescriptionLabel"
-        android:layout_below="@+id/tvDescriptionBody"
-		android:layout_marginTop="5dp"
-        android:text="Date:" />
-    
-    <TextView
-        android:id="@+id/tvDateBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvDateLabel"
-        android:layout_alignLeft="@+id/tvDescriptionBody"
-        android:layout_alignRight="@+id/tvDescriptionBody"/>
-    
-    <TextView
-        android:id="@+id/tvTimeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvDateLabel"
-        android:layout_below="@+id/tvDateLabel"
-        android:layout_marginTop="15dp"
-        android:text="Time:" />
-    
-    <TextView
-        android:id="@+id/tvTimeBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvTimeLabel"
-        android:layout_alignLeft="@+id/tvDateBody"
-        android:layout_alignRight="@+id/tvDateBody" />
-    <TextView
-        android:id="@+id/tvGuestsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvTimeLabel"
-        android:layout_below="@+id/tvTimeLabel"
-        android:layout_marginTop="15dp"
-        android:text="Who:" />
-    <TextView
-        android:id="@+id/tvGuestsBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvGuestsLabel"
-        android:layout_alignLeft="@+id/tvTimeBody"
-        android:layout_alignRight="@+id/tvTimeBody" />
-    
-    <TextView
-        android:id="@+id/tvVenueLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvGuestsLabel"
-        android:layout_below="@+id/tvGuestsLabel"
-        android:layout_marginTop="15dp"
-        android:text="Where:" />
-    
-    <TextView
-        android:id="@+id/tvVenueBody"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvVenueLabel"
-        android:layout_alignBottom="@+id/tvVenueLabel"
-        android:layout_alignLeft="@+id/tvGuestsBody"
-        android:layout_alignRight="@+id/tvGuestsBody" />
-    
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/rlForEventDetails" />
+
 </RelativeLayout>

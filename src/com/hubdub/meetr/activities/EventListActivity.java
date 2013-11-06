@@ -123,8 +123,6 @@ public class EventListActivity extends Activity {
 
 		listView.setAdapter(swingBottomInAnimationAdapter);
 
-		listView.setAdapter(swingBottomInAnimationAdapter);
-
 		listView.setDivider(this.getResources().getDrawable(
 				R.drawable.transperent_color));
 		listView.setDividerHeight(15);

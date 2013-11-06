@@ -1,77 +1,61 @@
 package com.hubdub.meetr.activities;
 
-import android.app.Activity;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hubdub.meetr.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.hubdub.meetr.fragments.EventDetailFragment;
+import com.hubdub.meetr.fragments.EventTimelineFragment;
 
-public class EventDetailActivity extends Activity {
-
-	private TextView tvEventName;
-//	private TextView tvRsvp;
-	private ImageView ivEventImage;
-	private TextView tvDescriptionBody;
-	private TextView tvDateBody;
-	private TextView tvTimeBody;
-    private TextView tvGuestsBody;
-	private TextView tvVenueBody;
+public class EventDetailActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_event_detail_frame);
+		setupTabs();
 		
-		setContentView(R.layout.activity_event_detail);
-		
-		setupViews();
-		
-		Intent i = getIntent();
-		
-		String eventName = i.getStringExtra("EventName");
-		String eventDescription = i.getStringExtra("Description");
-		Long eventDate = i.getLongExtra("EventDate", 0);
-		Long eventTime = i.getLongExtra("EventTime", 0);
-		String date = DateFormat.format("dd MMM, yyyy", eventDate).toString();
-		String time = DateFormat.format("h:mm a", eventTime).toString();
-		String guestList = getIntent().getStringExtra("GuestList");
-		String location = i.getStringExtra("Location");
-		String locationQuery = location.replace("\n", "+").replace(" ", "+").replace(",", "+");
-		String url = "http://maps.googleapis.com/maps/api/staticmap?center="
-				+ locationQuery
-				+ "zoom=13&size=400x220&maptype=roadmap&markers=color:red%7Caddress="
-				+ locationQuery + "%7C&sensor=false";
-		
-		tvEventName.setText(eventName);
-		tvDescriptionBody.setText(eventDescription);
-		tvDateBody.setText(date);
-		tvTimeBody.setText(time);
-		tvGuestsBody.setText(guestList);
-		tvVenueBody.setText(location);
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
-		ImageLoader imageLoader = ImageLoader.getInstance();
-		imageLoader.init(config);
-		imageLoader.displayImage(url, ivEventImage);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
 	}
+	
+	private void setupTabs() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setDisplayShowTitleEnabled(true);
 
-	private void setupViews() {
-		tvEventName = (TextView) findViewById(R.id.tvEventName);
-//		tvRsvp = (TextView) findViewById(R.id.tvRsvp);
-		tvDescriptionBody = (TextView) findViewById(R.id.tvDescriptionBody);
-		tvDateBody = (TextView) findViewById(R.id.tvDateBody);
-		tvTimeBody = (TextView) findViewById(R.id.tvTimeBody);
-		tvGuestsBody = (TextView) findViewById(R.id.tvGuestsBody);
-		tvVenueBody = (TextView) findViewById(R.id.tvVenueBody);
-		ivEventImage = (ImageView) findViewById(R.id.ivEventImage);
+		Tab eventDetailTab = actionBar
+			.newTab()
+			.setText("Event details")
+//			.setIcon(R.drawable.)
+			.setTag("EventDetailFragment")
+			.setTabListener(
+				new FragmentTabListener<EventDetailFragment>(R.id.flForEventDetailTabs, this, "EventDetailFragment",
+						EventDetailFragment.class));
+
+		actionBar.addTab(eventDetailTab);
+		actionBar.selectTab(eventDetailTab);
+
+		Tab eventTimelineTab = actionBar
+			.newTab()
+			.setText("Event Timeline")
+//			.setIcon(R.drawable.ic_mentions)
+			.setTag("EventTimelineFragment")
+			.setTabListener(
+			    new FragmentTabListener<EventTimelineFragment>(R.id.flForEventDetailTabs, this, "EventTimelineFragment",
+			    		EventTimelineFragment.class));
+
+		actionBar.addTab(eventTimelineTab);
 	}
 	
 	public void onEditButtonClicked() {
