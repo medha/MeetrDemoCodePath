@@ -1,0 +1,185 @@
+diff --git src/com/hubdub/meetr/activities/TimelineActivity.java src/com/hubdub/meetr/activities/TimelineActivity.java
+index 640eec8..cad380f 100644
+--- src/com/hubdub/meetr/activities/TimelineActivity.java
++++ src/com/hubdub/meetr/activities/TimelineActivity.java
+@@ -21,11 +21,13 @@ import com.hubdub.meetr.R;
+ import com.hubdub.meetr.adapters.EventTimeLineAdapter;
+ import com.hubdub.meetr.models.EventActivity;
+ import com.hubdub.meetr.models.Posts;
++import com.parse.FindCallback;
+ import com.parse.Parse;
+ import com.parse.ParseException;
+ import com.parse.ParseObject;
+ import com.parse.ParseQuery;
+ import com.parse.ParseUser;
++import com.parse.SaveCallback;
+ 
+ public class TimelineActivity extends Activity {
+ 
+@@ -33,6 +35,8 @@ public class TimelineActivity extends Activity {
+ 	private EventTimeLineAdapter adapter;
+ 	private ListView listView;
+ 	private String eventId;
++	List<EventActivity> eventActivity = new ArrayList<EventActivity>();
++
+ 
+ 	@Override
+ 	protected void onCreate(Bundle savedInstanceState) {
+@@ -82,18 +86,17 @@ public class TimelineActivity extends Activity {
+ 	public void loadData() {
+ 
+ 		listView = (ListView) findViewById(R.id.lvItems);
+-		List<EventActivity> eventActivity = new ArrayList<EventActivity>();
+-
++		
+ 		ParseQuery<EventActivity> query = fetchEventActivityItems();
+-
+-		try {
+-			eventActivity = query.find();
+-		} catch (ParseException e) {
+-			Log.d("ERROR", e.toString());
+-		}
+-		adapter = new EventTimeLineAdapter(TimelineActivity.this, new ArrayList<EventActivity>());
+-		listView.setAdapter(adapter);
+-		adapter.addAll(eventActivity);
++			query.findInBackground(new FindCallback<EventActivity>(){
++				@Override
++				public void done(List<EventActivity> object, ParseException e) {
++					eventActivity = object;
++					adapter = new EventTimeLineAdapter(TimelineActivity.this, new ArrayList<EventActivity>());
++					listView.setAdapter(adapter);
++					adapter.addAll(eventActivity);
++				}
++			});
+ 	}
+ 
+ 	private ParseQuery<EventActivity> fetchEventActivityItems() {
+@@ -140,11 +143,12 @@ public class TimelineActivity extends Activity {
+ 	
+ 	public void onCommentPost(View view){
+ 		
+-		Posts post = new Posts();
++		final Posts post = new Posts();
+ 		//Save in the post table
+-		ParseUser user = ParseUser.getCurrentUser();
++		final ParseUser user = ParseUser.getCurrentUser();
+ 		post.put("userPtr", user);
+-		JSONObject eventPtr = new JSONObject();
++		final JSONObject eventPtr = new JSONObject();
++		
+ 		try {
+ 			eventPtr.put("__type", "Pointer");
+ 			eventPtr.put("className", "Events");
+@@ -155,46 +159,51 @@ public class TimelineActivity extends Activity {
+ 		post.put("eventPtr", eventPtr);
+ 		EditText postText = (EditText) findViewById(R.id.etPost);
+ 		post.put("post", postText.getText().toString());
+-		try {
+-			post.save();
+-		} catch (ParseException e1) {
+-			// TODO Auto-generated catch block
+-			e1.printStackTrace();
+-		}
+- 		
+-		//create entry in the activity table
+- 		EventActivity eActivity = new EventActivity();
+- 		String postId = post.getObjectId();
+- 		JSONObject postPtr = new JSONObject();
+-		try {
+-			postPtr.put("__type", "Pointer");
+-			postPtr.put("className", "Posts");
+-			postPtr.put("objectId", postId);
+-		} catch (JSONException e) {
+-			e.printStackTrace();
+-		}
+-		eActivity.put("postPtr", postPtr);
+-		eActivity.put("activityFrom", user);
+-		eActivity.put("eventPtr", eventPtr);
+-		eActivity.put("eventObj", eventId);
+-		try {
+-			eActivity.save();
+-		} catch (ParseException e) {
+-			// TODO Auto-generated catch block
+-			e.printStackTrace();
+-		}
+-		
++		post.saveInBackground(new SaveCallback(){
++
++			@Override
++			public void done(ParseException e) {
++				//create entry in the activity table
++		 		EventActivity eActivity = new EventActivity();
++		 		String postId = post.getObjectId();
++		 		JSONObject postPtr = new JSONObject();
++				try {
++					postPtr.put("__type", "Pointer");
++					postPtr.put("className", "Posts");
++					postPtr.put("objectId", postId);
++				} catch (JSONException e1) {
++					e1.printStackTrace();
++				}
++				eActivity.put("postPtr", postPtr);
++				eActivity.put("activityFrom", user);
++				eActivity.put("eventPtr", eventPtr);
++				eActivity.put("eventObj", eventId);				
++			
++			eActivity.saveInBackground(new SaveCallback(){
++				@Override
++				public void done(ParseException e) {
++					ParseQuery<EventActivity> query = fetchEventActivityItems();
++					query.findInBackground(new FindCallback<EventActivity>(){
++
++						@Override
++						public void done(List<EventActivity> objects,
++								ParseException e) {
++							eventActivity = objects;
++							adapter.clear();
++							adapter.addAll(eventActivity);
++							listView.setAdapter(adapter);
++							adapter.notifyDataSetChanged();
++						}
++						
++					});
++
++				}
++				});
++			}
++			
++		});
++ 
+ 		//Adapter.add(this.post) and refresh adapter
+-		List<EventActivity> eventActivity = new ArrayList<EventActivity>();
+-		ParseQuery<EventActivity> query = fetchEventActivityItems();
+-
+-		try {
+-			eventActivity = query.find();
+-		} catch (ParseException e) {
+-			Log.d("ERROR", e.toString());
+-		}
+-		adapter.clear();
+-		adapter.addAll(eventActivity);
+ 	}
+ 
+ }
+diff --git src/com/hubdub/meetr/adapters/EventTimeLineAdapter.java src/com/hubdub/meetr/adapters/EventTimeLineAdapter.java
+index c4a4f34..79a268f 100644
+--- src/com/hubdub/meetr/adapters/EventTimeLineAdapter.java
++++ src/com/hubdub/meetr/adapters/EventTimeLineAdapter.java
+@@ -47,15 +47,12 @@ public class EventTimeLineAdapter extends ArrayAdapter<EventActivity> {
+ 		
+ 		//tvEventName.setText;
+ 		try {
+-			ParseObject obj = event.getParseObject("postPtr").fetch();
+-			ParseObject eventObj = event.getParseObject("activityFrom").fetch();
++			ParseObject obj = event.getParseObject("postPtr");
++			ParseObject eventObj = event.getParseObject("activityFrom");
+ 			
+ 			tvPost.setText(obj.getString("post"));
+ 			tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
+ 			
+-		} catch (ParseException e) {
+-			// TODO Auto-generated catch block
+-			e.printStackTrace();
+ 		} catch (JSONException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();

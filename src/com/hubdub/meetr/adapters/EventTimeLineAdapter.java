@@ -46,19 +46,21 @@ public class EventTimeLineAdapter extends ArrayAdapter<EventActivity> {
 //		
 		
 		//tvEventName.setText;
-		try {
-			ParseObject obj = event.getParseObject("postPtr").fetch();
-			ParseObject eventObj = event.getParseObject("activityFrom").fetch();
-			
-			tvPost.setText(obj.getString("post"));
-			tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
-			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(event.getObjectId() != null){
+			try {
+				ParseObject obj = event.getParseObject("postPtr");
+				ParseObject eventObj = event.getParseObject("activityFrom");
+				
+				tvPost.setText(obj.getString("post"));
+				tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			tvPost.setText("Loading...");
+			tvPostBy.setText("");
 		}
 
 
