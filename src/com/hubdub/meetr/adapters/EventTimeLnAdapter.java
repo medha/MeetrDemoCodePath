@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hubdub.meetr.models.EventActivity;
@@ -31,15 +32,15 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 		}
 
 		final EventActivity event = getItem(position);
-
-		// Do additional configuration before returning the View.
-		TextView tvPost = (TextView) view
-				.findViewById(com.hubdub.meetr.R.id.eventPost);
-		TextView tvPostBy = (TextView) view
-				.findViewById(com.hubdub.meetr.R.id.postBy);
+		String eventType = event.getString("ActivityType");
 		
-		//tvEventName.setText;
-		if(event.getObjectId() != null){
+		if (eventType == null) eventType = new String("post");
+		if(eventType.equals("post") || (eventType == null)) {
+			view = LayoutInflater.from(mContext).inflate(com.hubdub.meetr.R.layout.timeline_item, parent,false);
+			TextView tvPost = (TextView) view
+					.findViewById(com.hubdub.meetr.R.id.eventPost);
+			TextView tvPostBy = (TextView) view
+					.findViewById(com.hubdub.meetr.R.id.postBy);
 			try {
 				ParseObject obj = event.getParseObject("postPtr");
 				ParseObject eventObj = event.getParseObject("activityFrom");
@@ -50,15 +51,19 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-		} else {
-			tvPost.setText("Loading...");
-			tvPostBy.setText("");
+			} 
+		}
+		if(eventType.equals("photo")) {
+			view = LayoutInflater.from(mContext).inflate(com.hubdub.meetr.R.layout.timeline_photo_item, parent,false);
+			ImageView ivPhoto = (ImageView) view
+					.findViewById(com.hubdub.meetr.R.id.imageView1);
+			TextView tvPostBy = (TextView) view
+					.findViewById(com.hubdub.meetr.R.id.postBy);
+			ParseObject obj = event.getParseObject("photoPtr");
+			ParseObject eventObj = event.getParseObject("activityFrom"); 
 		}
 
-
+		
 		return view;
 	}
-	
-
 }
