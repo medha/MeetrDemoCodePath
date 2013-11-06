@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.activities.TimelineActivity;
 import com.hubdub.meetr.adapters.EventTimeLnAdapter;
 import com.hubdub.meetr.models.EventActivity;
 import com.hubdub.meetr.models.Posts;
