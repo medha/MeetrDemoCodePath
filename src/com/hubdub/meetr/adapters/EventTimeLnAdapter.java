@@ -35,7 +35,7 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 		String eventType = event.getString("ActivityType");
 		
 		if (eventType == null) eventType = new String("post");
-		if(eventType.equals("post") || (eventType == null)) {
+		if(eventType.equals("post")) {
 			view = LayoutInflater.from(mContext).inflate(com.hubdub.meetr.R.layout.timeline_item, parent,false);
 			TextView tvPost = (TextView) view
 					.findViewById(com.hubdub.meetr.R.id.eventPost);

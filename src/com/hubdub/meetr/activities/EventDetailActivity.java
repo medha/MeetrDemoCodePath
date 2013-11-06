@@ -95,5 +95,5 @@ public class EventDetailActivity extends FragmentActivity {
 		toast.show();
 
 	}
-		
+	
 }
