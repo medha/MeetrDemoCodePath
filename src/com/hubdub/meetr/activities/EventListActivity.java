@@ -180,7 +180,7 @@ public class EventListActivity extends Activity {
 		
 		ParseQuery<Events> query = new ParseQuery<Events>("Events");
 		query = ParseQuery.or(queries);
-		query.orderByDescending("EventDate");
+		query.orderByDescending("createdAt");
 		return query;
 	}
 

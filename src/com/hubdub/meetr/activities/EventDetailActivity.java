@@ -70,6 +70,8 @@ public class EventDetailActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.eventdetail, menu);
+		   MenuItem mi =  menu.findItem(R.id.action_camera);
+		   if ( mi != null) mi.setVisible(false);
 		return true;
 	}
 
@@ -79,26 +81,12 @@ public class EventDetailActivity extends FragmentActivity {
 		case R.id.action_edit:
 			onEditButtonClicked();
 			return true;
-		case R.id.action_camera:
-			callCameraFragment();
-			return true;
 		case android.R.id.home:
 			onBackPressed();  //This should be compatible with API 5+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-	
-	public void callCameraFragment() {
-		Intent i = new Intent(this, CameraActivity.class);
-		startActivity(i);
-
-		Toast toast = Toast.makeText(getApplicationContext(), "Add pictures",
-				Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-		toast.show();
-
 	}
 	
 }
