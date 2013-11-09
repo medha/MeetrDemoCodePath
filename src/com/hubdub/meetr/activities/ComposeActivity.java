@@ -345,6 +345,7 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setFbGuestList(fbGuestList);
 			event.saveEventually();
 			
+			
 			Log.d("DEBUG", "about to save event");
 			
 			// Instead of going back to the EventListActivity, we are going to
@@ -363,7 +364,7 @@ public class ComposeActivity extends FragmentActivity implements
 			extras.putString("Location", btLocation.getText().toString());
 			i.putExtras(extras);
 			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-
+	
 			startActivity(i);
 			// Need to close this activity and head back out.
 			mEventNameInput.setText("");

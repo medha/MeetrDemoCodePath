@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.hubdub.meetr.R;
+import com.hubdub.meetr.activities.CameraActivity;
 import com.hubdub.meetr.adapters.EventTimeLnAdapter;
 import com.hubdub.meetr.models.EventActivity;
 import com.hubdub.meetr.models.Posts;
@@ -21,14 +22,18 @@ import com.parse.SaveCallback;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class EventTimelineFragment extends Fragment {
 	private EventTimeLnAdapter adapter;
@@ -36,6 +41,13 @@ public class EventTimelineFragment extends Fragment {
 	private String eventId;
 	List<EventActivity> eventActivity = new ArrayList<EventActivity>();
 
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		setHasOptionsMenu(true);
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_event_timeline, container, false);
@@ -84,6 +96,35 @@ public class EventTimelineFragment extends Fragment {
 			});
 	}
 	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	   inflater.inflate(R.menu.timeline, menu);
+	   MenuItem mi =  menu.findItem(R.id.action_edit);
+	   if ( mi != null) mi.setVisible(false);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_camera:
+			callCameraFragment();
+			return true;
+		case android.R.id.home:
+			getActivity().onBackPressed();  //This should be compatible with API 5+
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	public void callCameraFragment() {
+		Intent i = new Intent(getActivity(), CameraActivity.class);
+		startActivity(i);
+
+		Toast toast = Toast.makeText(getActivity(), "Add pictures", Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+		toast.show();
+	}
 	
 	private ParseQuery<EventActivity> fetchEventActivityItems() {
 		String fbId = "";
@@ -187,7 +228,7 @@ public class EventTimelineFragment extends Fragment {
 			}
 			
 		});
-	
+		postText.setText("");
 		EventActivity loadingObject = new EventActivity();
 		loadingObject.setObjectId(null);
 		eventActivity.add(0, loadingObject);
