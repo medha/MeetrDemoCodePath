@@ -1,5 +1,6 @@
 package com.hubdub.meetr.fragments;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,18 +11,22 @@ import com.hubdub.meetr.R;
 import com.hubdub.meetr.activities.CameraActivity;
 import com.hubdub.meetr.adapters.EventTimeLnAdapter;
 import com.hubdub.meetr.models.EventActivity;
+import com.hubdub.meetr.models.Photos;
 import com.hubdub.meetr.models.Posts;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,6 +45,7 @@ public class EventTimelineFragment extends Fragment {
 	private ListView listView;
 	private String eventId;
 	List<EventActivity> eventActivity = new ArrayList<EventActivity>();
+	private static final int CAMERA_REQUEST = 1888; 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class EventTimelineFragment extends Fragment {
 		 */
 		ParseObject.registerSubclass(EventActivity.class);
 		ParseObject.registerSubclass(Posts.class);
+		ParseObject.registerSubclass(Photos.class);
 		
 		Parse.initialize(getActivity(), "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
@@ -72,10 +79,10 @@ public class EventTimelineFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		loadData();
-		
+
 		listView = (ListView) getView().findViewById(R.id.lvItems);
 		ImageButton submit_button = (ImageButton) getView().findViewById(R.id.submit_button);
+		
 		submit_button.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -84,16 +91,7 @@ public class EventTimelineFragment extends Fragment {
 			}
 		});
 		
-		ParseQuery<EventActivity> query = fetchEventActivityItems();
-			query.findInBackground(new FindCallback<EventActivity>(){
-				@Override
-				public void done(List<EventActivity> object, ParseException e) {
-					eventActivity = object;
-					adapter = new EventTimeLnAdapter(getActivity(), new ArrayList<EventActivity>());
-					listView.setAdapter(adapter);
-					adapter.addAll(eventActivity);
-				}
-			});
+		loadData();
 	}
 	
 	@Override
@@ -118,15 +116,96 @@ public class EventTimelineFragment extends Fragment {
 	}
 	
 	public void callCameraFragment() {
-		Intent i = new Intent(getActivity(), CameraActivity.class);
-		startActivity(i);
-
-		Toast toast = Toast.makeText(getActivity(), "Add pictures", Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-		toast.show();
+		Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(i, CAMERA_REQUEST); 
 	}
 	
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {  
+		if (requestCode == CAMERA_REQUEST && resultCode == FragmentActivity.RESULT_OK) {  
+
+    		Toast toast = Toast.makeText(getActivity(), "Uploading...", Toast.LENGTH_LONG);
+    		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+    		toast.show();
+            
+            final Photos photos = new Photos();
+    		final ParseUser user = ParseUser.getCurrentUser();
+    		photos.put("userPtr", user);
+
+    		final JSONObject eventPtr = new JSONObject();
+    		try {
+    			eventPtr.put("__type", "Pointer");
+    			eventPtr.put("className", "Events");
+    			eventPtr.put("objectId", eventId);
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    		photos.put("eventPtr", eventPtr);
+    		
+    		Bitmap photo = (Bitmap) intent.getExtras().get("data");
+    		
+    		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    		photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+    		byte[] byteArray = stream.toByteArray();
+    		
+    		ParseFile photoFile = new ParseFile("photo.png", byteArray);
+    		photoFile.saveInBackground();
+    		
+    		photos.put("photo", photoFile);
+    		photos.saveInBackground(new SaveCallback(){
+
+    			@Override
+    			public void done(ParseException e) {
+    				//create entry in the activity table
+    		 		EventActivity eActivity = new EventActivity();
+    		 		String photoId = photos.getObjectId();
+    		 		JSONObject photoPtr = new JSONObject();
+    				try {
+    					photoPtr.put("__type", "Pointer");
+    					photoPtr.put("className", "Photos");
+    					photoPtr.put("objectId", photoId);
+    				} catch (JSONException e1) {
+    					e1.printStackTrace();
+    				}
+    				eActivity.put("photoPtr", photoPtr);
+    				eActivity.put("activityFrom", user);
+    				eActivity.put("eventPtr", eventPtr);
+    				eActivity.put("eventObj", eventId);		
+    				eActivity.put("activityType", "photo");
+    			
+    			eActivity.saveInBackground(new SaveCallback(){
+    				@Override
+    				public void done(ParseException e) {
+    					ParseQuery<EventActivity> query = fetchEventActivityItems();
+    					query.findInBackground(new FindCallback<EventActivity>(){
+
+    						@Override
+    						public void done(List<EventActivity> objects,
+    								ParseException e) {
+    							eventActivity = objects;
+    							adapter.clear();
+    							adapter.addAll(eventActivity);
+    							System.out.println("Added items to adapter: " + eventActivity.size());
+    							listView.setAdapter(adapter);
+    							System.out.println("Notifying data set changed.");
+    							adapter.notifyDataSetChanged();
+    						}
+    						
+    					});
+
+    				}
+    				});
+    			}
+    			
+    		});
+//    		EventActivity loadingObject = new EventActivity();
+//    		loadingObject.setObjectId(null);
+//    		eventActivity.add(0, loadingObject);
+//    		adapter.notifyDataSetChanged();
+        }  
+    } 
+	
 	private ParseQuery<EventActivity> fetchEventActivityItems() {
+		System.out.println("fetchEventActivityItems");
 		String fbId = "";
 		// Here we can configure a ParseQuery to our heart's desire.
 		try {
@@ -143,6 +222,7 @@ public class EventTimelineFragment extends Fragment {
 		query.whereEqualTo("eventObj", eventId);
 		query.include("activityFrom");
 		query.include("postPtr");
+		query.include("photoPtr");
 		query.orderByDescending("createdAt");
 		return query;
 	}
@@ -151,8 +231,6 @@ public class EventTimelineFragment extends Fragment {
 	 * Functon to Load data into the listview
 	 */
 	public void loadData() {
-
-		listView = (ListView) getView().findViewById(R.id.lvItems);
 		
 		ParseQuery<EventActivity> query = fetchEventActivityItems();
 			query.findInBackground(new FindCallback<EventActivity>(){
@@ -203,7 +281,8 @@ public class EventTimelineFragment extends Fragment {
 				eActivity.put("postPtr", postPtr);
 				eActivity.put("activityFrom", user);
 				eActivity.put("eventPtr", eventPtr);
-				eActivity.put("eventObj", eventId);				
+				eActivity.put("eventObj", eventId);		
+				eActivity.put("activityType", "post");
 			
 			eActivity.saveInBackground(new SaveCallback(){
 				@Override
@@ -217,7 +296,9 @@ public class EventTimelineFragment extends Fragment {
 							eventActivity = objects;
 							adapter.clear();
 							adapter.addAll(eventActivity);
+							System.out.println("Added items to adapter: " + eventActivity.size());
 							listView.setAdapter(adapter);
+							System.out.println("Notifying data set changed.");
 							adapter.notifyDataSetChanged();
 						}
 						
@@ -229,10 +310,10 @@ public class EventTimelineFragment extends Fragment {
 			
 		});
 		postText.setText("");
-		EventActivity loadingObject = new EventActivity();
-		loadingObject.setObjectId(null);
-		eventActivity.add(0, loadingObject);
-		adapter.notifyDataSetChanged();
+//		EventActivity loadingObject = new EventActivity();
+//		loadingObject.setObjectId(null);
+//		eventActivity.add(0, loadingObject);
+//		adapter.notifyDataSetChanged();
 	}
 
 }
