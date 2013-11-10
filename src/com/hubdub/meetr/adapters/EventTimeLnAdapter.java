@@ -35,14 +35,16 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 		}
 		
 		final EventActivity activity = getItem(position);
+		TextView tvPost = (TextView) view.findViewById(R.id.eventPost);
+		TextView tvPostBy = (TextView) view.findViewById(R.id.postBy);
+		ParseImageView imageView = (ParseImageView) view.findViewById(R.id.ivPhotoPost);
 		
-		if(activity.getString("activityType").equals("post")) {
+		if(activity.getObjectId() != null){
 			
-			TextView tvPost = (TextView) view.findViewById(R.id.eventPost);
-			TextView tvPostBy = (TextView) view.findViewById(R.id.postBy);
-			
-			
-			if(activity.getObjectId() != null){
+			if(activity.getString("activityType").equals("post")) {
+				imageView.setVisibility(View.GONE);
+				tvPost.setVisibility(View.VISIBLE);
+				
 				try {
 					ParseObject obj = activity.getParseObject("postPtr");
 					ParseObject eventObj = activity.getParseObject("activityFrom");
@@ -50,7 +52,7 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 					tvPost.setText(obj.getString("post"));
 					System.out.println("getting post: " + obj.getString("post").hashCode());
 					tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
-					
+						
 				} catch (JSONException e) {
 					Toast.makeText(getContext(), "We weren't able to do that. Sorry!", Toast.LENGTH_SHORT).show();
 					Log.d("ERROR", "1: " + e.toString());
@@ -61,16 +63,10 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 					Toast.makeText(getContext(), "We weren't able to do that. Sorry!", Toast.LENGTH_SHORT).show();
 					Log.d("ERROR", "3: " + e.toString());
 				}
-			} else {
-				tvPost.setText("Loading...");
-				tvPostBy.setText("");
-			}
+			} else if (activity.getString("activityType").equals("photo")) {
+				imageView.setVisibility(View.VISIBLE);
+				tvPost.setVisibility(View.GONE);
 			
-		} else if (activity.getString("activityType").equals("photo")) {
-			TextView tvPostBy = (TextView) view.findViewById(R.id.postBy);
-			ParseImageView imageView = (ParseImageView) view.findViewById(R.id.ivPhotoPost);
-			
-			if(activity.getObjectId() != null){
 				try {
 					ParseObject obj = activity.getParseObject("photoPtr");
 					ParseObject eventObj = activity.getParseObject("activityFrom");
@@ -95,10 +91,10 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 					Toast.makeText(getContext(), "We weren't able to do that. Sorry!", Toast.LENGTH_SHORT).show();
 					Log.d("ERROR", "6: " + e.toString());
 				}
-			} else {
-				tvPostBy.setText("Loading...");
 			}
-
+		} else {
+			tvPost.setText("Loading...");
+			tvPostBy.setText("");
 		}
 
 		return view;
