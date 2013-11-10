@@ -5,14 +5,10 @@ import android.app.ActionBar.Tab;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.fragments.ConvergeTimelineFragment;
 import com.hubdub.meetr.fragments.EventDetailFragment;
 import com.hubdub.meetr.fragments.EventTimelineFragment;
 
@@ -25,10 +21,6 @@ public class EventDetailActivity extends FragmentActivity {
 		setupTabs();
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.fragment_converge_placeholder, new ConvergeTimelineFragment());
-		ft.commit();
 	}
 	
 	private void setupTabs() {
@@ -60,27 +52,9 @@ public class EventDetailActivity extends FragmentActivity {
 		actionBar.addTab(eventTimelineTab);
 	}
 	
-	public void onEditButtonClicked() {
-		Intent i = new Intent(this, ComposeActivity.class);
-		startActivity(i);
-		finish();
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.eventdetail, menu);
-		   MenuItem mi =  menu.findItem(R.id.action_camera);
-		   if ( mi != null) mi.setVisible(false);
-		return true;
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_edit:
-			onEditButtonClicked();
-			return true;
 		case android.R.id.home:
 			onBackPressed();  //This should be compatible with API 5+
 			return true;

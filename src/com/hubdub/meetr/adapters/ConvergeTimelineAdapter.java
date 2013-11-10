@@ -23,7 +23,7 @@ public class ConvergeTimelineAdapter extends ArrayAdapter<String> {
 			view = LayoutInflater.from(mContext).inflate(com.hubdub.meetr.R.layout.converge_timeline_item, parent,false);
 			
 		}
-
+		
 		 String dummy = getItem(position);
 
 			TextView tvChangeDate = (TextView) view.findViewById(com.hubdub.meetr.R.id.tvChangeDate);

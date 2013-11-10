@@ -15,7 +15,7 @@
     
     
     <!-- Label values -->
-    <string name="label_eventName">Event Name</string>
+    <string name="label_eventName">Event Name really long om how long is this</string>
     <string name="label_eventDate">Event Date</string>
     <string name="label_eventTime">Event Time</string>
     <string name="label_eventMonth">Event Month</string>
@@ -47,4 +47,10 @@
 	<string name="error_dialog_title">Error</string>
 	<string name="error_dialog_button_text">OK</string>
 	<string name="no_location">Could not obtain your current location.</string>
+	
+	<string-array name="spinner_rsvp">
+                <item>Yes</item>
+                <item>No</item>
+                <item>Meetr</item>
+                </string-array>
 </resources>

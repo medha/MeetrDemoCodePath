@@ -21,22 +21,14 @@
             android:layout_toRightOf="@+id/ivFriends"
             android:layout_marginTop="2dp"
             android:textSize="12sp"
-            android:text="12 Dec: " />
+            android:text="Amanda: " />
 
-        <TextView
-            android:id="@+id/eventPost"
+        <com.parse.ParseImageView
+            android:id="@+id/ivPhotoPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_toRightOf="@+id/postBy"
-            android:paddingBottom="2dp"
-            android:layout_alignLeft="@id/postBy"
-            android:text="Amanda, Robert, Carthy, Katty and NyanCat are going."
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#575757"
-			android:textStyle="bold"
-            android:textSize="13sp" />
-        
-        
+            android:layout_alignLeft="@+id/postBy"
+            android:layout_below="@+id/ivFriends"
+            android:src="@drawable/transperent_color" />
 
 </RelativeLayout>
