@@ -140,6 +140,7 @@ public class EventTimelineFragment extends Fragment {
     			e.printStackTrace();
     		}
     		photos.put("eventPtr", eventPtr);
+    		photos.put("eventIdStr", eventId);
     		
     		Bitmap photo = (Bitmap) intent.getExtras().get("data");
     		

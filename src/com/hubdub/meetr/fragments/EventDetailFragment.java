@@ -1,10 +1,5 @@
 package com.hubdub.meetr.fragments;
 
-import com.hubdub.meetr.R;
-import com.hubdub.meetr.activities.ComposeActivity;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,23 +11,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.hubdub.meetr.R;
+import com.hubdub.meetr.activities.ComposeActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class EventDetailFragment extends Fragment {
 
 	private TextView tvEventName;
-//	private TextView tvRsvp;
 	private ImageView ivEventImage;
 	private TextView tvDescriptionBody;
 	private TextView tvDateBody;
 	private TextView tvTimeBody;
     private TextView tvGuestsBody;
 	private TextView tvVenueBody;
-	private Button bYes;
-	private Button bNo;
-	private Button bMeetr;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,6 +62,8 @@ public class EventDetailFragment extends Fragment {
 					+ "zoom=13&size=400x120&maptype=roadmap&markers=color:red%7Caddress="
 					+ locationQuery + "%7C&sensor=false";
 			ivEventImage.setVisibility(View.VISIBLE);
+
+			
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
 			ImageLoader imageLoader = ImageLoader.getInstance();
 			imageLoader.init(config);
@@ -88,17 +85,12 @@ public class EventDetailFragment extends Fragment {
 	
 	private void setupViews() {
 		tvEventName = (TextView) getView().findViewById(R.id.tvEventName);
-//		tvRsvp = (TextView) findViewById(R.id.tvRsvp);
 		tvDescriptionBody = (TextView) getView().findViewById(R.id.tvDescriptionBody);
 		tvDateBody = (TextView) getView().findViewById(R.id.tvDateBody);
 		tvTimeBody = (TextView) getView().findViewById(R.id.tvTimeBody);
 		tvGuestsBody = (TextView) getView().findViewById(R.id.tvGuestsBody);
 		tvVenueBody = (TextView) getView().findViewById(R.id.tvVenueBody);
 		ivEventImage = (ImageView) getView().findViewById(R.id.ivEventImage);
-//		bYes = (Button) getView().findViewById(R.id.bYes);
-//		bNo = (Button) getView().findViewById(R.id.bNo);
-//		bMeetr = (Button) getView().findViewById(R.id.bMeetr);
-		
 	}
 	
 	@Override

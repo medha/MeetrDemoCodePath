@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.fragments.EventDetailFragment;
 import com.hubdub.meetr.fragments.EventTimelineFragment;
+import com.hubdub.meetr.fragments.PhotoGridFragment;
 
 public class EventDetailActivity extends FragmentActivity implements ActionBar.TabListener {
 	
@@ -99,7 +100,7 @@ public class EventDetailActivity extends FragmentActivity implements ActionBar.T
                     return fragment;
                     
                 case 2:
-                	fragment = new EventTimelineFragment();
+                	fragment = new PhotoGridFragment();
                 	return fragment;
             }
             return fragment;

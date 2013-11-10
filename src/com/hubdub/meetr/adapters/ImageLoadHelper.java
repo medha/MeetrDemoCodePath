@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.util.LruCache;
 import android.widget.ImageView;
 
+import com.hubdub.meetr.models.Photos;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
@@ -55,6 +56,7 @@ public class ImageLoadHelper {
 			task.execute(parsePhotoFile);
 		}
 	}
+	
 
 	/**
 	 * Checks if another running task is already associated with the ImageView.
