@@ -41,6 +41,7 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 			TextView tvPost = (TextView) view.findViewById(R.id.eventPost);
 			TextView tvPostBy = (TextView) view.findViewById(R.id.postBy);
 			
+			
 			if(activity.getObjectId() != null){
 				try {
 					ParseObject obj = activity.getParseObject("postPtr");

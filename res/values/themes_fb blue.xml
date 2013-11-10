@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="FbBlue" parent="android:Theme.Light">
+
+    <item name="android:editTextStyle">@style/EditTextFbBlue</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewFbBlue</item>
+
+    <item name="android:buttonStyle">@style/ButtonFbBlue</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonFbBlue</item>
+
+    <item name="android:spinnerStyle">@style/SpinnerFbBlue</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerFbBlue.DropDown</item>
+
+    <item name="android:listViewStyle">@style/ListViewFbBlue</item>
+
+    <item name="android:listViewWhiteStyle">@style/ListViewFbBlue.White</item>
+
+    <item name="android:spinnerItemStyle">@style/SpinnerItemFbBlue</item>
+
+  </style>
+
+</resources>

@@ -13,12 +13,14 @@
 
         <EditText
             android:id="@+id/etPost"
+            style="@style/EditTextFbBlue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="text"
-            android:hint="Comment">
+            android:hint="Comment"
+            android:inputType="text" >
+
             <requestFocus />
         </EditText>
 
@@ -26,7 +28,7 @@
             android:id="@+id/submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_default_normal_holo_light"
+            android:background="@drawable/card_background_white"
             android:src="@drawable/ic_action_post" />
 
     </LinearLayout>

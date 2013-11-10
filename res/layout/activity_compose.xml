@@ -10,6 +10,7 @@
 
         <EditText
             android:id="@+id/tvEventName"
+            style="@style/EditTextFbBlue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -31,7 +32,7 @@
 
             <Button
                 android:id="@+id/btnChangeDate"
-                style="?android:attr/spinnerStyle"
+                style="@style/SpinnerFbBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -42,7 +43,7 @@
 
             <Button
                 android:id="@+id/btnChangeTime"
-                style="?android:attr/spinnerStyle"
+                style="@style/SpinnerFbBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -54,27 +55,27 @@
 
         <Button
             android:id="@+id/btLocation"
-            style="?android:attr/spinnerStyle"
+            style="@style/EditTextFbBlue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/llButtonRow"
             android:layout_alignRight="@+id/llButtonRow"
             android:layout_below="@+id/llButtonRow"
-            android:text="Pick a location"
-            android:onClick="onPickLocationButtonSelected" />
+            android:onClick="onPickLocationButtonSelected"
+            android:text="Pick a location" />
 
         <Button
             android:id="@+id/pickFriendsButton"
-            style="?android:attr/spinnerStyle"
+            style="@style/EditTextFbBlue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/btLocation"
             android:layout_alignRight="@+id/btLocation"
             android:layout_below="@+id/btLocation"
             android:gravity="left|center_vertical"
-            android:textSize="15sp" 
+            android:onClick="onClickPickFriends"
             android:text="Add friends"
-            android:onClick="onClickPickFriends"/>
+            android:textSize="15sp" />
 
         <EditText
             android:id="@+id/tvDescriptionBody"
