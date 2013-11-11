@@ -5,9 +5,11 @@ import java.util.Calendar;
 import com.hubdub.meetr.activities.ComposeActivity;
 
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.widget.DatePicker;
 
 public class DatePickerFragment extends DialogFragment{
 	@Override
@@ -19,6 +21,15 @@ public class DatePickerFragment extends DialogFragment{
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), (ComposeActivity)getActivity(), year, month, day);
+        return new DatePickerDialog(getActivity(), hello, year, month, day);
     }
+	
+	OnDateSetListener hello = new OnDateSetListener() {
+		
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			// do nothing
+		}
+	};
 }

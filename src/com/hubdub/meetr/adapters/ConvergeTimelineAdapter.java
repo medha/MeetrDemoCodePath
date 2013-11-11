@@ -1,6 +1,9 @@
 package com.hubdub.meetr.adapters;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import org.json.JSONException;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,10 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class ConvergeTimelineAdapter extends ArrayAdapter<String> {
+import com.hubdub.meetr.R;
+import com.hubdub.meetr.models.EventActivity;
+import com.parse.ParseObject;
+
+public class ConvergeTimelineAdapter extends ArrayAdapter<EventActivity> {
 	Context mContext;
 
-	public ConvergeTimelineAdapter(Context context, ArrayList<String> arrayList) {
+	public ConvergeTimelineAdapter(Context context, ArrayList<EventActivity> arrayList) {
 		super(context, 0, arrayList);
 		mContext = context;
 	}
@@ -24,14 +31,27 @@ public class ConvergeTimelineAdapter extends ArrayAdapter<String> {
 			
 		}
 		
-		 String dummy = getItem(position);
+		EventActivity activity = getItem(position);
+        ParseObject eventObj = activity.getParseObject("activityFrom");
+        ParseObject obj = activity.getParseObject("suggestionPtr");
+        
+        TextView tvPostBy = (TextView) view.findViewById(R.id.tvPostBy);
+        
+        try {
+			tvPostBy.setText((eventObj.getJSONObject("profile").getString("name")));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-			TextView tvChangeDate = (TextView) view.findViewById(com.hubdub.meetr.R.id.tvChangeDate);
-			TextView tvConverge = (TextView) view.findViewById(com.hubdub.meetr.R.id.tvConverge);
-
-			tvChangeDate.setText("4:00pm");
-			tvConverge.setText(dummy);
-			
+		TextView tvPost = (TextView) view.findViewById(com.hubdub.meetr.R.id.tvPost);
+		Date mEventDate = obj.getDate("EventDate");
+		Date mEventTime = obj.getDate("EventTime");
+		String location = obj.getString("Location");
+		String suggestion_line1 = mEventTime.toString() + " " + mEventDate.toString() + "\n" + location;
+		
+		tvPost.setText(suggestion_line1);
+		
 		return view;
 	}
 	

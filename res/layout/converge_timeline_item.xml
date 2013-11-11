@@ -15,7 +15,7 @@
          android:src="@drawable/update" />
 
         <TextView
-            android:id="@+id/tvChangeDate"
+            android:id="@+id/tvPostBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/ivUpdate"
@@ -24,7 +24,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/tvConverge"
+            android:id="@+id/tvPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tvChangeDate"

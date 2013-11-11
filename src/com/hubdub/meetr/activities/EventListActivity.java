@@ -142,8 +142,6 @@ public class EventListActivity extends Activity {
 
 				Intent i = new Intent(EventListActivity.this,
 						EventDetailActivity.class);
-//				Intent i = new Intent(EventListActivity.this,
-//						TimelineActivity.class);
 				i.putExtras(extras);
 				startActivity(i);
 			}

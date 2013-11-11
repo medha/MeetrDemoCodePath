@@ -76,8 +76,8 @@ public class ComposeActivity extends FragmentActivity implements
 	protected JSONArray guestListArray = new JSONArray();
 	protected String results = new String();
 	private String selectedString = new String();
-	protected TextView tvDescriptionBody;
-	protected Button btLocation;
+	private TextView tvDescriptionBody;
+	private Button btLocation;
 	private Location lastKnownLocation;
 	private LocationManager locationManager;
 	private Location pickPlaceForLocationWhenSessionOpened = null;
