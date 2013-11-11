@@ -7,21 +7,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.hubdub.meetr.R;
-import com.hubdub.meetr.activities.CameraActivity;
-import com.hubdub.meetr.adapters.EventTimeLnAdapter;
-import com.hubdub.meetr.models.EventActivity;
-import com.hubdub.meetr.models.Photos;
-import com.hubdub.meetr.models.Posts;
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -39,6 +24,20 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.hubdub.meetr.R;
+import com.hubdub.meetr.adapters.EventTimeLnAdapter;
+import com.hubdub.meetr.models.EventActivity;
+import com.hubdub.meetr.models.Photos;
+import com.hubdub.meetr.models.Posts;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class EventTimelineFragment extends Fragment {
 	private EventTimeLnAdapter adapter;
@@ -198,23 +197,10 @@ public class EventTimelineFragment extends Fragment {
     			}
     			
     		});
-//    		EventActivity loadingObject = new EventActivity();
-//    		loadingObject.setObjectId(null);
-//    		eventActivity.add(0, loadingObject);
-//    		adapter.notifyDataSetChanged();
         }  
     } 
 	
 	private ParseQuery<EventActivity> fetchEventActivityItems() {
-		System.out.println("fetchEventActivityItems");
-		String fbId = "";
-		// Here we can configure a ParseQuery to our heart's desire.
-		try {
-			fbId = ParseUser.getCurrentUser().getJSONObject("profile")
-					.getString("facebookId");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 		/*
 		 * Doing a join query here. Requesting all rows where the event is
 		 * created by this user and also where this user is an invited guest.
@@ -311,10 +297,6 @@ public class EventTimelineFragment extends Fragment {
 			
 		});
 		postText.setText("");
-//		EventActivity loadingObject = new EventActivity();
-//		loadingObject.setObjectId(null);
-//		eventActivity.add(0, loadingObject);
-//		adapter.notifyDataSetChanged();
 	}
 
 }

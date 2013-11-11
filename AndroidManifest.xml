@@ -30,15 +30,13 @@
         </activity>
         <activity
             android:name="com.hubdub.meetr.activities.PickFriendsActivity"
-            android:label="@string/label_pickFriends"
-            android:theme="@style/AppBaseTheme" >
+            android:label="@string/label_pickFriends">
         </activity>
         <activity android:name="com.hubdub.meetr.activities.EventDetailActivity" >
         </activity>
         <activity
             android:name="com.hubdub.meetr.activities.ComposeActivity"
-            android:label="@string/label_compose"
-            android:theme="@style/AppBaseTheme" >
+            android:label="@string/label_compose" >
         </activity>
         <activity
             android:name="com.hubdub.meetr.activities.CameraActivity"
@@ -61,16 +59,24 @@
 
         <activity
             android:name="com.hubdub.meetr.activities.PickPlaceActivity"
-            android:label="@string/placesActivity"
-            android:theme="@style/AppBaseTheme" >
+            android:label="@string/placesActivity" >
         </activity>
         
           <activity
             android:name="com.hubdub.meetr.activities.TimelineActivity"
-            android:label="TimeLine"
-            android:theme="@style/AppBaseTheme" >
+            android:label="TimeLine">
         </activity>
         
+           <activity
+            android:name="com.hubdub.meetr.activities.EditEventActivity"
+            android:label="Edit Event">
+        </activity>
+        
+          <activity
+            android:name="com.hubdub.meetr.activities.ImageDisplayActivity"
+            android:label="Image Display">
+        </activity>
+            
 
         <service android:name="com.parse.PushService" />
         <receiver android:name="com.parse.ParseBroadcastReceiver" >

@@ -3,6 +3,7 @@ package com.hubdub.meetr.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -13,9 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.activities.ComposeActivity;
+import com.hubdub.meetr.activities.EditEventActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -28,6 +28,7 @@ public class EventDetailFragment extends Fragment {
 	private TextView tvTimeBody;
     private TextView tvGuestsBody;
 	private TextView tvVenueBody;
+	private int REQUEST_CODE = 1;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,9 +117,18 @@ public class EventDetailFragment extends Fragment {
 	}
 	
 	public void onEditButtonClicked() {
-		Intent i = new Intent(getActivity(), ComposeActivity.class);
-		startActivity(i);
-		getActivity().finish();
+		Intent i = new Intent(getActivity(), EditEventActivity.class);
+		startActivityForResult(i, REQUEST_CODE );
 	}
+	
+	// FirstActivity, time to handle the result of the sub-activity
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	  if (resultCode == FragmentActivity.RESULT_OK && requestCode == REQUEST_CODE) {
+	    
+		  data.getExtras().getString("name");
+		  
+	  }
+	} 
 	
 }

@@ -99,14 +99,6 @@ public class TimelineActivity extends Activity {
 	}
 
 	private ParseQuery<EventActivity> fetchEventActivityItems() {
-		String fbId = "";
-		// Here we can configure a ParseQuery to our heart's desire.
-		try {
-			fbId = ParseUser.getCurrentUser().getJSONObject("profile")
-					.getString("facebookId");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 		/*
 		 * Doing a join query here. Requesting all rows where the event is
 		 * created by this user and also where this user is an invited guest.

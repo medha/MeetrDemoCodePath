@@ -64,25 +64,25 @@ public class ComposeActivity extends FragmentActivity implements
 
 	private static final String APPLICATION_ID = "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU";
 	private static final String CLIENT_KEY = "3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH";
-	private EditText mEventNameInput;
-	private Date eventDate;
-	private Date eventTime;
+	protected EditText mEventNameInput;
+	protected Date eventDate;
+	protected Date eventTime;
 	private UiLifecycleHelper lifecycleHelper;
 	boolean pickFriendsWhenSessionOpened;
 	private Button pickFriendsButton;
 	private static final int PICK_FRIENDS_ACTIVITY = 1;
 	private static final int PICK_PLACE_ACTIVITY = 2;
 	static final int DATE_DIALOG_ID = 999;
-	private JSONArray guestListArray = new JSONArray();
-	private String results = new String();
+	protected JSONArray guestListArray = new JSONArray();
+	protected String results = new String();
 	private String selectedString = new String();
-	private TextView tvDescriptionBody;
-	private Button btLocation;
+	protected TextView tvDescriptionBody;
+	protected Button btLocation;
 	private Location lastKnownLocation;
 	private LocationManager locationManager;
 	private Location pickPlaceForLocationWhenSessionOpened = null;
 	private boolean canGetLocation;
-	private ArrayList <String> fbGuestList = new ArrayList<String>();
+	protected ArrayList <String> fbGuestList = new ArrayList<String>();
 
 	private static final Location SAN_FRANCISCO_LOCATION = new Location("") {
 		{
@@ -375,7 +375,7 @@ public class ComposeActivity extends FragmentActivity implements
 		}
 	}
 
-	private void addSelectedFriends() {
+	protected void addSelectedFriends() {
 		/*
 		 * get the global application context to save the results from facebook
 		 * friend picker.

@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.json.JSONException;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +16,7 @@ import android.widget.Toast;
 
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.models.EventActivity;
-import com.parse.GetDataCallback;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseImageView;
 import com.parse.ParseObject;
 
 public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {

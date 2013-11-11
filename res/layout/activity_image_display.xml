@@ -6,11 +6,8 @@
 
     <ImageView
         android:id="@+id/ivResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:maxWidth="600dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:src="@android:drawable/screen_background_light" />
 
 </RelativeLayout>

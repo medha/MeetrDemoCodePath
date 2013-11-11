@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.hubdub.meetr.R;
-import com.hubdub.meetr.activities.EventDetailActivity;
 import com.hubdub.meetr.adapters.ConvergeTimelineAdapter;
 
 public class ConvergeTimelineFragment extends Fragment{

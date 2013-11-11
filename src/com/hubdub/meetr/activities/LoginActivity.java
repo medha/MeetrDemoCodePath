@@ -16,7 +16,6 @@ import android.widget.Button;
 
 import com.hubdub.meetr.R;
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;

@@ -1,6 +1,5 @@
 package com.hubdub.meetr.adapters;
 
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import android.os.AsyncTask;
 import android.util.LruCache;
 import android.widget.ImageView;
 
-import com.hubdub.meetr.models.Photos;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
@@ -131,13 +129,6 @@ public class ImageLoadHelper {
 				} catch (ParseException e) {
 					bitmap = null;
 				}
-//				// Convert string to URL
-//				URL url = getUrlFromString(addresses[0]);
-//				// Get input stream
-//				InputStream in = getInputStream(url);
-//				// Decode bitmap
-//				bitmap = decodeBitmap(in, url);
-				// Add final bitmap to both memory and disk cache
 				addBitmapToCache(imageKey, bitmap);
 			}
 			// Return bitmap result
@@ -160,43 +151,6 @@ public class ImageLoadHelper {
 				}
 			}
 		}
-	}
-
-	/**
-	 * If inSampleSize is set to a value > 1, it requests the decoder to
-	 * subsample the original image, returning a smaller image to save memory.
-	 * Any value <= 1 is treated the same as 1.
-	 * @param Options options
-	 * @param int reqWidth
-	 * @param int reqHeight
-	 * @return int inSampleSize
-	 */
-	public static int calculateInSampleSize(BitmapFactory.Options options,
-			int reqWidth, int reqHeight) {
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		int inSampleSize = 1;
-
-		if (height > reqHeight || width > reqWidth) {
-
-			// Calculate ratios of height and width to requested height and width
-			final int heightRatio = Math.round((float) height
-					/ (float) reqHeight);
-			final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-			// Choose the smallest ratio as inSampleSize value, this will
-			// guarantee a final image with both dimensions larger than or 
-			// equal to the requested height and width.
-			if (heightRatio < widthRatio) {
-				inSampleSize = heightRatio;
-			} else {
-				inSampleSize = widthRatio;
-			}
-		}
-		//Using powers of 2 for inSampleSize values is faster and more efficient for the decoder.
-		inSampleSize = (int) Math.pow(2d, Math.floor(Math.log(inSampleSize) / Math.log(2d)));
-		return inSampleSize;
 	}
 
 	/**

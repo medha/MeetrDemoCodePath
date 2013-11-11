@@ -20,6 +20,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.hubdub.meetr.R;
+import com.hubdub.meetr.activities.ImageDisplayActivity;
 import com.hubdub.meetr.models.Photos;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -62,15 +63,6 @@ public class PhotoGridFragment extends Fragment {
 		return view;
 	}
 	
-	
-	public void loadMore(int totalItemsCount) {
-		start = totalItemsCount;
-		String fullUrl;
-		/* Implement paging of data from Parse */
-		
-	}
-	
-	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -79,27 +71,18 @@ public class PhotoGridFragment extends Fragment {
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//				Intent intent = new Intent(getActivity(), ImageDisplayActivity.class);
-//				ImageResult imageResult = imageResults.get(position);
-//				intent.putExtra("result", imageResult);
-//				startActivity(intent);
-				// TODO
-			}
-		});
-		
-		gridView.setOnScrollListener(new EndlessScrollListener() {
-			@Override
-			public void onLoadMore(int page, int totalItemsCount) {
-				/* 
-				 * TODO 
-				 * loadMore(totalItemsCount);
-				 */
+				 // Sending image id to FullScreenActivity
+                Intent i = new Intent(getActivity(), ImageDisplayActivity.class);
+                // passing array index
+                Photos photo = adapter.getItem(position);
+    			String url = photo.getParseFile("photo").getUrl();
+                i.putExtra("url", url);
+                startActivity(i);
 			}
 		});
 		
 		/* Initial load of photos */
 		loadData();
-
 	}
 	
 	/*
@@ -158,13 +141,12 @@ public class PhotoGridFragment extends Fragment {
 			}
 
 			Photos photo = getItem(position);
-			
 			String url = photo.getParseFile("photo").getUrl();
-			
 			
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
 			ImageLoader imageLoader = ImageLoader.getInstance();
 			imageLoader.init(config);
+			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 			imageLoader.displayImage(url, imageView);
 		
 			return imageView;

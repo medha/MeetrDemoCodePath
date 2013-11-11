@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.facebook.FacebookException;
 import com.facebook.widget.FriendPickerFragment;
 import com.facebook.widget.PickerFragment;
-import com.facebook.widget.PickerFragment.OnDoneButtonClickedListener;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.models.Events;
 import com.parse.ParseObject;
