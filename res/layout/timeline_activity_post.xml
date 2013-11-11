@@ -3,24 +3,24 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
     
-     <ImageView
+    <ImageView
             android:id="@+id/ivFriends"
-            android:layout_width="25dp"
-            android:layout_height="15dp"
-            android:src="@drawable/friend" 
-            android:layout_marginTop="5dp"/>
-    
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
         <TextView
             android:id="@+id/postBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="2dp"
             android:layout_toRightOf="@+id/ivFriends"
-            android:textSize="12sp" />
+            android:layout_alignTop="@+id/ivFriends"
+            android:layout_marginLeft="3dp"
+            android:textSize="12sp"
+            android:src="@drawable/transperent_color" />
 
         <TextView
             android:id="@+id/eventPost"
@@ -28,21 +28,18 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/postBy"
             android:layout_alignRight="@+id/postBy"
-            android:layout_marginTop="18dp"
-            android:layout_toRightOf="@+id/postBy"
-            android:paddingBottom="2dp"
+            android:layout_below="@+id/postBy"
+            android:background="@drawable/bubble_yellow"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#575757"
-            android:textSize="13sp"
-            android:background="@drawable/bubble_yellow"
-            android:textStyle="bold" />
+            android:textSize="13sp" />
 
                 <com.parse.ParseImageView
                     android:id="@+id/ivPhotoPost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/eventPost"
-                    android:layout_below="@+id/ivFriends"
+                    android:layout_below="@+id/postBy"
 					android:background="@drawable/bubble_yellow"
                     android:src="@drawable/transperent_color" />
 

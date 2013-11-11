@@ -16,12 +16,15 @@ import android.widget.Toast;
 
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.models.EventActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 
 public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
         Context mContext;
         private ImageLoadHelper imageLoadHelper;
+        private ImageLoader imageLoader;
 
         public EventTimeLnAdapter(Context context, ArrayList<EventActivity> arrayList) {
                 super(context, 0, arrayList);
@@ -29,6 +32,10 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
 
                 // Using a helper class. Keeps the adapter clean and tidy.
                 imageLoadHelper = new ImageLoadHelper(context);
+                
+                ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+        		imageLoader = ImageLoader.getInstance();
+        		imageLoader.init(config);
         }
 
         @Override
@@ -41,6 +48,7 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
                 TextView tvPost = (TextView) view.findViewById(R.id.eventPost);
                 TextView tvPostBy = (TextView) view.findViewById(R.id.postBy);
                 final ImageView imageView = (ImageView) view.findViewById(R.id.ivPhotoPost);
+                ImageView ivProfilePhoto = (ImageView) view.findViewById(R.id.ivFriends);
                 
                 if(activity.getObjectId() != null){
                         
@@ -52,10 +60,19 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
                                         ParseObject obj = activity.getParseObject("postPtr");
                                         ParseObject eventObj = activity.getParseObject("activityFrom");
                                         
+                                        String fbId = eventObj.getJSONObject("profile").getString("facebookId");
+                                        
+                                        String imageUrl = "http://graph.facebook.com/" + fbId + "/picture?type=square";
+                                        imageLoader.displayImage(imageUrl, ivProfilePhoto);
+                                        
+                                        
+                                        
                                         tvPost.setText(obj.getString("post"));
                                         System.out.println("getting post: " + obj.getString("post").hashCode());
                                         tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
                                                 
+                                        
+                                        
                                 } catch (JSONException e) {
                                         Toast.makeText(getContext(), "We weren't able to do that. Sorry!", Toast.LENGTH_SHORT).show();
                                         Log.d("ERROR", "1: " + e.toString());
@@ -73,6 +90,11 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
                                 try {
                                         ParseObject obj = activity.getParseObject("photoPtr");
                                         ParseObject eventObj = activity.getParseObject("activityFrom");
+                                        
+                                        String fbId = eventObj.getJSONObject("profile").getString("facebookId");
+                                        
+                                        String imageUrl = "http://graph.facebook.com/" + fbId + "/picture?type=square";
+                                        imageLoader.displayImage(imageUrl, ivProfilePhoto);
                                         
                                         ParseFile photoFile = obj.getParseFile("photo");
                                         imageLoadHelper.loadBitmap(photoFile, imageView);
