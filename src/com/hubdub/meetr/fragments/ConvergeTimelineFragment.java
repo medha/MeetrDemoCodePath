@@ -93,6 +93,7 @@ public class ConvergeTimelineFragment extends Fragment{
 						eventActivity = object;
 						adapter = new ConvergeTimelineAdapter(getActivity(), new ArrayList<EventActivity>());
 						listView.setAdapter(adapter);
+						adapter.clear();
 						adapter.addAll(eventActivity);
 						adapter.notifyDataSetChanged();
 					} else {

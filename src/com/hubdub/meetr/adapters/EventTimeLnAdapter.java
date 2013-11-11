@@ -65,13 +65,9 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
                                         String imageUrl = "http://graph.facebook.com/" + fbId + "/picture?type=square";
                                         imageLoader.displayImage(imageUrl, ivProfilePhoto);
                                         
-                                        
-                                        
                                         tvPost.setText(obj.getString("post"));
                                         System.out.println("getting post: " + obj.getString("post").hashCode());
                                         tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));
-                                                
-                                        
                                         
                                 } catch (JSONException e) {
                                         Toast.makeText(getContext(), "We weren't able to do that. Sorry!", Toast.LENGTH_SHORT).show();
@@ -97,7 +93,7 @@ public class EventTimeLnAdapter extends ArrayAdapter<EventActivity> {
                                         imageLoader.displayImage(imageUrl, ivProfilePhoto);
                                         
                                         ParseFile photoFile = obj.getParseFile("photo");
-                                        imageLoadHelper.loadBitmap(photoFile, imageView);
+                                        imageLoadHelper.loadBitmap(photoFile, imageView); 
                                         
                                         System.out.println("getting photo file: " + photoFile.hashCode());
                                         tvPostBy.setText(eventObj.getJSONObject("profile").getString("name"));

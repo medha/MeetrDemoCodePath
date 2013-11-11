@@ -84,6 +84,7 @@ public class ComposeActivity extends FragmentActivity implements
 	private Location pickPlaceForLocationWhenSessionOpened = null;
 	private boolean canGetLocation;
 	protected ArrayList <String> fbGuestList = new ArrayList<String>();
+	private String eventId;
 
 	private static final Location SAN_FRANCISCO_LOCATION = new Location("") {
 		{
@@ -297,17 +298,36 @@ public class ComposeActivity extends FragmentActivity implements
 			event.saveInBackground(new SaveCallback() {
 				@Override
 				public void done(ParseException e) {
-					final String eventId = event.getObjectId();
+					eventId = event.getObjectId();
 					final String eventName = event.getEventName();
+					
+					// Instead of going back to the EventListActivity, we are going to
+					// start a new activity that shows the newly created event
+					Intent i = new Intent(ComposeActivity.this,
+							EventDetailActivity.class);
+
+					// Additional information being sent across
+					Bundle extras = new Bundle();
+					extras.putString("EventId", eventId);
+					extras.putString("EventName", mEventNameInput.getText().toString());
+					extras.putLong("EventDate", eventDate.getTime());
+					extras.putLong("EventTime", eventTime.getTime());
+					extras.putString("GuestList", results);
+					extras.putString("Description", tvDescriptionBody.getText()
+							.toString());
+					extras.putString("Location", btLocation.getText().toString());
+					i.putExtras(extras);
+					i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+
 
 					JSONArray guestList = event.getGuestList();
 					/* Setup the push service to call EventListActivity class */
 					PushService.subscribe(getBaseContext(), "event_"+eventId, com.hubdub.meetr.activities.EventListActivity.class);
 					
-					for(int i=0; i<guestList.length(); i++) {
+					for(int j=0; j<guestList.length(); j++) {
 						try {
 							/* Get facebook id for each guest */
-							JSONObject guest = (JSONObject) guestList.get(i);
+							JSONObject guest = (JSONObject) guestList.get(j);
 							String fbId = (String) guest.get("id");
 							String fbName = (String) guest.get("name");
 							fbGuestList.add(fbId);
@@ -334,45 +354,27 @@ public class ComposeActivity extends FragmentActivity implements
 							e1.printStackTrace();
 						}
 					}
+					
+					try {
+						fbGuestList.add(ParseUser.getCurrentUser().getJSONObject("profile").getString("facebookId"));
+					} catch (JSONException e1) {
+							e1.printStackTrace();
+					}
+					
+					fbGuestList = new ArrayList<String>(new HashSet<String>(fbGuestList));
+					event.setFbGuestList(fbGuestList);
+					event.saveEventually();
+					
+					startActivity(i);
+					// Need to close this activity and head back out.
+					mEventNameInput.setText("");
+					/* reset the global variable */
+					MeetrApplication application = (MeetrApplication) getApplication();
+					application.setSelectedUsers(null);
+					finish();
 				}
 			});
-			try {
-				fbGuestList.add(ParseUser.getCurrentUser().getJSONObject("profile").getString("facebookId"));
-			} catch (JSONException e1) {
-					e1.printStackTrace();
-			}
-			
-			fbGuestList = new ArrayList<String>(new HashSet<String>(fbGuestList));
-			event.setFbGuestList(fbGuestList);
-			event.saveEventually();
-			
-			
 			Log.d("DEBUG", "about to save event");
-			
-			// Instead of going back to the EventListActivity, we are going to
-			// start a new activity that shows the newly created event
-			Intent i = new Intent(ComposeActivity.this,
-					EventDetailActivity.class);
-
-			// Additional information being sent across
-			Bundle extras = new Bundle();
-			extras.putString("EventName", mEventNameInput.getText().toString());
-			extras.putLong("EventDate", eventDate.getTime());
-			extras.putLong("EventTime", eventTime.getTime());
-			extras.putString("GuestList", results);
-			extras.putString("Description", tvDescriptionBody.getText()
-					.toString());
-			extras.putString("Location", btLocation.getText().toString());
-			i.putExtras(extras);
-			i.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-	
-			startActivity(i);
-			// Need to close this activity and head back out.
-			mEventNameInput.setText("");
-			/* reset the global variable */
-			MeetrApplication application = (MeetrApplication) getApplication();
-			application.setSelectedUsers(null);
-			finish();
 		}
 	}
 

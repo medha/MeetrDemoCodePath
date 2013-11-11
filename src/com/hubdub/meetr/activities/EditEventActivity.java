@@ -24,7 +24,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -45,6 +47,7 @@ import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.ConvergeTimelineAdapter;
+import com.hubdub.meetr.fragments.ConvergeTimelineFragment;
 import com.hubdub.meetr.fragments.DatePickerFragment;
 import com.hubdub.meetr.fragments.DatePickerFragment.DatePickedListener;
 import com.hubdub.meetr.fragments.TimePickerFragment;
@@ -336,7 +339,7 @@ public class EditEventActivity extends FragmentActivity implements
 
 	public void onEventCreateAction(View v) {
 
-		Intent i = new Intent();
+		final Intent i = new Intent();
 		Bundle extras = new Bundle();
 
 		final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -426,21 +429,26 @@ public class EditEventActivity extends FragmentActivity implements
 					eActivity.put("eventPtr", eventPtr);
 					eActivity.put("eventObj", mEventId);
 					eActivity.put("activityType", "suggestion");
-					eActivity.saveInBackground();
+					eActivity.saveInBackground(new SaveCallback() {
+						@Override
+						public void done(ParseException e) {
+							// TODO Auto-generated method stub
+							
+							setResult(RESULT_OK, i);
+							// Need to close this activity and head back out.
+							mEventNameInput.setText("");
+							/* reset the global variable */
+							MeetrApplication application = (MeetrApplication) getApplication();
+							application.setSelectedUsers(null);
+							finish();
+						}
+					});
 				} catch (IllegalArgumentException e1) {
 					Log.d("ERROR", e1.getMessage());
 				}
 			}
 
 		});
-
-		setResult(RESULT_OK, i);
-		// Need to close this activity and head back out.
-		mEventNameInput.setText("");
-		/* reset the global variable */
-		MeetrApplication application = (MeetrApplication) getApplication();
-		application.setSelectedUsers(null);
-		finish();
 	}
 
 	protected void addSelectedFriends() {
@@ -500,7 +508,6 @@ public class EditEventActivity extends FragmentActivity implements
 		// We just store our selection in the Application for other activities
 		// to look at.
 		onEventCreateAction(this.getCurrentFocus());
-		finish();
 	}
 
 	public void onPickLocationButtonSelected(View v) {

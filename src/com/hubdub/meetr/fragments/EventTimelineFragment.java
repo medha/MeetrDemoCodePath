@@ -226,6 +226,7 @@ public class EventTimelineFragment extends Fragment {
 					eventActivity = object;
 					adapter = new EventTimeLnAdapter(getActivity(), new ArrayList<EventActivity>());
 					listView.setAdapter(adapter);
+					adapter.clear();
 					adapter.addAll(eventActivity);
 				}
 			});

@@ -59,10 +59,8 @@ public class EventDetailFragment extends Fragment {
 
 		setHasOptionsMenu(true);
 
-		FragmentTransaction ft = getActivity().getSupportFragmentManager()
-				.beginTransaction();
-		ft.replace(R.id.fragment_converge_placeholder,
-				new ConvergeTimelineFragment());
+		FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+		ft.replace(R.id.fragment_converge_placeholder, new ConvergeTimelineFragment(), "ConvergeTimelineFragment");
 		ft.commit();
 
 		Intent i = getActivity().getIntent();

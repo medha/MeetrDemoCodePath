@@ -92,6 +92,7 @@ public class TimelineActivity extends Activity {
 				public void done(List<EventActivity> object, ParseException e) {
 					eventActivity = object;
 					adapter = new EventTimeLnAdapter(TimelineActivity.this, new ArrayList<EventActivity>());
+					adapter.clear();
 					listView.setAdapter(adapter);
 					adapter.addAll(eventActivity);
 				}
