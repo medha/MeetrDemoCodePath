@@ -6,7 +6,10 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,12 +44,9 @@ public class ConvergeTimelineFragment extends Fragment{
 		View view = inflater.inflate(R.layout.fragment_converge_timeline, container, false);
 		ParseObject.registerSubclass(EventActivity.class);
 		ParseObject.registerSubclass(Suggestions.class);
-
 		
 		Parse.initialize(getActivity(), "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU",
 				"3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH");
-
-		
 		
 		return view;
 	}
@@ -61,16 +61,9 @@ public class ConvergeTimelineFragment extends Fragment{
 		Intent i = getActivity().getIntent();
 		Bundle extras = i.getExtras();
 
-		String eventId = extras.getString("EventId");
-		
-//		ArrayList<String> dummyStrings = new ArrayList<String>();
-//		dummyStrings.add(name + "suggests meeting at " + time + " on " + date +  " at " + location );
+		eventId = extras.getString("EventId");
 		
 		loadData();
-		
-//		ConvergeTimelineAdapter adapter = new ConvergeTimelineAdapter(getActivity(), new ArrayList<EventActivity>());
-//		lvConvergeItems.setAdapter(adapter);
-//		adapter.notifyDataSetChanged();
 	}
 	
 	private ParseQuery<EventActivity> fetchEventActivityItems() {
@@ -96,10 +89,15 @@ public class ConvergeTimelineFragment extends Fragment{
 			query.findInBackground(new FindCallback<EventActivity>(){
 				@Override
 				public void done(List<EventActivity> object, ParseException e) {
-					eventActivity = object;
-					adapter = new ConvergeTimelineAdapter(getActivity(), new ArrayList<EventActivity>());
-					listView.setAdapter(adapter);
-					adapter.addAll(eventActivity);
+					if (e == null) {
+						eventActivity = object;
+						adapter = new ConvergeTimelineAdapter(getActivity(), new ArrayList<EventActivity>());
+						listView.setAdapter(adapter);
+						adapter.addAll(eventActivity);
+						adapter.notifyDataSetChanged();
+					} else {
+						Log.d("ERROR", e.getMessage());
+					}
 				}
 			});
 	}

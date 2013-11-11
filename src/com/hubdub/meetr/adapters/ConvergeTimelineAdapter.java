@@ -6,6 +6,7 @@ import java.util.Date;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class ConvergeTimelineAdapter extends ArrayAdapter<EventActivity> {
         TextView tvPostBy = (TextView) view.findViewById(R.id.tvPostBy);
         
         try {
-			tvPostBy.setText((eventObj.getJSONObject("profile").getString("name")));
+			tvPostBy.setText((eventObj.getJSONObject("profile").getString("name")) + " suggests:");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,8 +48,10 @@ public class ConvergeTimelineAdapter extends ArrayAdapter<EventActivity> {
 		TextView tvPost = (TextView) view.findViewById(com.hubdub.meetr.R.id.tvPost);
 		Date mEventDate = obj.getDate("EventDate");
 		Date mEventTime = obj.getDate("EventTime");
+		String date = DateFormat.format("MMM dd", mEventDate).toString();
+		String time = DateFormat.format("h:mm a", mEventTime).toString();
 		String location = obj.getString("Location");
-		String suggestion_line1 = mEventTime.toString() + " " + mEventDate.toString() + "\n" + location;
+		String suggestion_line1 = date + ", " + time + " at " + location;
 		
 		tvPost.setText(suggestion_line1);
 		

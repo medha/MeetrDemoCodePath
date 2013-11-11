@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -152,18 +153,12 @@ public class EventDetailFragment extends Fragment {
 	// FirstActivity, time to handle the result of the sub-activity
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == 0 && requestCode == REQUEST_CODE) {
-			if (!data.getExtras().isEmpty()) {
+		if (resultCode == FragmentActivity.RESULT_OK && requestCode == REQUEST_CODE) {
 
-				System.out.println(data.getStringExtra("EventName"));
-				System.out.println(data.getLongExtra("EventDate", 0));
-				System.out.println(data.getLongExtra("EventTime", 0));
-				System.out.println(data.getStringExtra("GuestList"));
-				System.out.println(data.getStringExtra("Description"));
-				System.out.println(data.getStringExtra("Location"));
-			}
-			// TODO we have the new values
-
+			FragmentManager fm = getActivity().getSupportFragmentManager();
+			Fragment fragment = fm.findFragmentById(R.id.fragment_converge_placeholder);
+			((ConvergeTimelineFragment) fragment).loadData();
+			
 		}
 	}
 
