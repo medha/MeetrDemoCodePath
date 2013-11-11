@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import com.hubdub.meetr.R;
@@ -26,35 +28,20 @@ public class EventDetailActivity extends FragmentActivity implements ActionBar.T
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_detail_frame);
-		//setupTabs();
 		
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
         final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        PagerTabStrip strip = (PagerTabStrip)findViewById(R.id.pager_title_strip);
+        strip.setTabIndicatorColor(0x999999);
+        strip.setDrawFullUnderline(true);
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                // When swiping between different app sections, select the corresponding tab.
-                // We can also use ActionBar.Tab#select() to do this if we have a reference to the
-                // Tab.
-                actionBar.setSelectedNavigationItem(position);
             }
         });
-        
-        actionBar.addTab(actionBar.newTab()
-                        .setText("Details")
-                        .setTabListener(this));
-        
-        actionBar.addTab(actionBar.newTab()
-                .setText("Timeline")
-                .setTabListener(this));
-        
-        actionBar.addTab(actionBar.newTab()
-                .setText("Photos")
-                .setTabListener(this));
 	}
 	
 	@Override
@@ -113,8 +100,15 @@ public class EventDetailActivity extends FragmentActivity implements ActionBar.T
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Section " + (position + 1);
+            switch(position){
+            	case 0:
+            		return "Details";
+            	case 1:
+            		return "Timeline";
+            	case 2: 
+            		return "Photos";
+            }
+			return "Event";
         }
     }
-
 }
