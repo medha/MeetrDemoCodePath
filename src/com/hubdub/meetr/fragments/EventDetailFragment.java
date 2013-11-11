@@ -1,5 +1,7 @@
 package com.hubdub.meetr.fragments;
 
+import java.io.FileNotFoundException;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,6 +41,8 @@ public class EventDetailFragment extends Fragment {
 	private String guestList;
 	private String location;
 	private String eventId;
+	private String month;
+	private TextView tvMonthBody;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,8 +72,12 @@ public class EventDetailFragment extends Fragment {
 		eventDescription = i.getStringExtra("Description");
 		eventDate = i.getLongExtra("EventDate", 0);
 		eventTime = i.getLongExtra("EventTime", 0);
-		date = DateFormat.format("MMM dd", eventDate).toString();
+		
+		
+		month = DateFormat.format("MMM", eventDate).toString().toUpperCase();
+		date = DateFormat.format("dd", eventDate).toString();
 		time = DateFormat.format("h:mm a", eventTime).toString();
+		
 		guestList = i.getStringExtra("GuestList");
 		location = i.getStringExtra("Location");
 		if (location != null) {
@@ -85,8 +93,9 @@ public class EventDetailFragment extends Fragment {
 					getActivity()).build();
 			ImageLoader imageLoader = ImageLoader.getInstance();
 			imageLoader.init(config);
+			
 			imageLoader.displayImage(url, ivEventImage);
-
+			
 			String[] locationSplit = location.split("\n");
 			tvVenueBody.setText(locationSplit[0] + ", " + locationSplit[1]);
 		} else {
@@ -96,6 +105,7 @@ public class EventDetailFragment extends Fragment {
 
 		tvEventName.setText(eventName);
 		tvDescriptionBody.setText(eventDescription);
+		tvMonthBody.setText(month);
 		tvDateBody.setText(date);
 		tvTimeBody.setText(time);
 		tvGuestsBody.setText(guestList);
@@ -106,6 +116,7 @@ public class EventDetailFragment extends Fragment {
 		tvDescriptionBody = (TextView) getView().findViewById(
 				R.id.tvDescriptionBody);
 		tvDateBody = (TextView) getView().findViewById(R.id.tvDateBody);
+		tvMonthBody = (TextView) getView().findViewById(R.id.tvMonth);
 		tvTimeBody = (TextView) getView().findViewById(R.id.tvTimeBody);
 		tvGuestsBody = (TextView) getView().findViewById(R.id.tvGuestsBody);
 		tvVenueBody = (TextView) getView().findViewById(R.id.tvVenueBody);

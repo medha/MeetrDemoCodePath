@@ -2,98 +2,141 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingRight="16dp"
     android:background="@drawable/card_background_white"
     android:orientation="vertical"
-    android:padding="16dp" >
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp" >
 
-    <TextView
-        android:id="@+id/eventName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="5dp"
-        android:text="@string/label_eventName"
-        android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/ivTimeDate"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/cal" />
 
+        <TextView
+            android:id="@+id/tvMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/ivTimeDate"
+            android:layout_alignRight="@+id/ivTimeDate"
+            android:layout_alignTop="@+id/ivTimeDate"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="DEC"
+            android:textColor="#575757"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+        
         <TextView
             android:id="@+id/eventDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/eventName"
-            android:layout_toRightOf="@+id/ivTimeDate"
-            android:layout_marginTop="2dp"
-            android:layout_alignTop="@+id/ivTimeDate"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text="12 Dec" />
-
-        <TextView
-            android:id="@+id/eventTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/eventDate"
-            android:layout_marginLeft="7dp"
-            android:layout_toRightOf="@+id/eventDate"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text="4:00 PM" />
-
-        <ImageView
-            android:id="@+id/ivTimeDate"
-            android:layout_width="25dp"
-            android:layout_height="20dp"
-            android:layout_alignLeft="@+id/eventName"
-            android:layout_below="@+id/eventName"
-            android:src="@drawable/time_date" 
-            android:layout_marginTop="3dp"/>
+            android:layout_alignBottom="@+id/ivTimeDate"
+            android:layout_alignLeft="@+id/ivTimeDate"
+            android:layout_alignRight="@+id/ivTimeDate"
+            android:layout_below="@+id/tvMonth"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:text="12"
+            android:textColor="#E10000"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/ivMapPin"
             android:layout_width="25dp"
             android:layout_height="20dp"
-            android:layout_below="@+id/eventDate"
             android:layout_alignLeft="@+id/ivTimeDate"
-            android:src="@drawable/pin"
-            android:layout_marginTop="3dp" />
+            android:layout_below="@+id/eventTime"
+            android:layout_marginTop="6dp"
+            android:src="@drawable/map" />
 
         <ImageView
             android:id="@+id/ivFriends"
             android:layout_width="25dp"
             android:layout_height="15dp"
             android:layout_below="@+id/tvLocation"
-            android:layout_alignLeft="@+id/ivMapPin"
-            android:src="@drawable/friend" 
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/tvLocation"
+            android:src="@drawable/friend" />
 
-        <TextView
-            android:id="@+id/tvFriendsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvLocation"
-            android:layout_alignLeft="@+id/tvLocation"
-            android:layout_toRightOf="@+id/ivFriends"
+        <ImageView
+            android:id="@+id/ivFriendsProfile1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignTop="@+id/ivFriends"
-            android:paddingBottom="8dp"
-            android:text="Amanda, Robert, Carthy, Katty and NyanCat are going."
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#575757"
-            android:textSize="13sp" />
+            android:layout_toRightOf="@+id/ivFriends"
+            android:layout_marginLeft="3dp" />
 
-        <TextView
-            android:id="@+id/tvLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/eventDate"
-            android:layout_below="@+id/eventDate"
-            android:layout_alignTop="@+id/ivMapPin"
-            android:layout_toRightOf="@+id/ivMapPin"
-            android:text="1575 Tenaka Place, Apt C-2, Sunnyvale, CA, hsiludhal suhf, ajbsfliugsfiug asf, ajsifbiluasf"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#575757"
-            android:textSize="13sp" />
+         <ImageView
+             android:id="@+id/ivFriendsProfile2"
+             android:layout_width="30dp"
+             android:layout_height="30dp"
+             android:layout_toRightOf="@+id/ivFriendsProfile1"
+             android:layout_alignTop="@+id/ivFriendsProfile1"
+             android:layout_marginLeft="3dp" />
+         
+          <ImageView
+             android:id="@+id/ivFriendsProfile3"
+             android:layout_width="30dp"
+             android:layout_height="30dp"
+             android:layout_toRightOf="@+id/ivFriendsProfile2"
+             android:layout_alignTop="@+id/ivFriendsProfile2"
+             android:layout_marginLeft="3dp" />
+          
+          <ImageView
+             android:id="@+id/ivFriendsProfile4"
+             android:layout_width="30dp"
+             android:layout_height="30dp"
+             android:layout_toRightOf="@+id/ivFriendsProfile3"
+             android:layout_alignTop="@+id/ivFriendsProfile3"
+             android:layout_marginLeft="3dp" />
+          
+          <ImageView
+             android:id="@+id/ivFriendsProfile5"
+             android:layout_width="30dp"
+             android:layout_height="30dp"
+             android:layout_toRightOf="@+id/ivFriendsProfile4"
+             android:layout_alignTop="@+id/ivFriendsProfile4"
+             android:layout_marginLeft="3dp" />
+
+          <TextView
+              android:id="@+id/eventName"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignRight="@+id/tvLocation"
+              android:layout_alignTop="@+id/tvMonth"
+              android:layout_toRightOf="@+id/ivTimeDate"
+              android:text="@string/label_eventName"
+              android:textSize="16sp"
+              android:textStyle="bold"
+              android:layout_marginLeft="5dp" />
+
+          <TextView
+              android:id="@+id/eventTime"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignLeft="@+id/eventName"
+              android:layout_below="@+id/eventName"
+              android:gravity="center"
+              android:text="4:00 PM"
+              android:textSize="12sp" />
+
+          <TextView
+              android:id="@+id/tvLocation"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignTop="@+id/ivMapPin"
+              android:layout_toRightOf="@+id/ivMapPin"
+              android:text="1575 Tenaka Place, Apt C-2, Sunnyvale, CA, hsiludhal suhf, ajbsfliugsfiug asf, ajsifbiluasf"
+              android:textAppearance="?android:attr/textAppearanceMedium"
+              android:textColor="#575757"
+              android:textSize="13sp" />
 
 </RelativeLayout>

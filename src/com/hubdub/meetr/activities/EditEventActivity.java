@@ -46,6 +46,7 @@ import com.facebook.model.GraphUser;
 import com.hubdub.meetr.R;
 import com.hubdub.meetr.adapters.ConvergeTimelineAdapter;
 import com.hubdub.meetr.fragments.DatePickerFragment;
+import com.hubdub.meetr.fragments.DatePickerFragment.DatePickedListener;
 import com.hubdub.meetr.fragments.TimePickerFragment;
 import com.hubdub.meetr.fragments.TimePickerFragment.TimePickedListener;
 import com.hubdub.meetr.models.EventActivity;
@@ -60,7 +61,7 @@ import com.parse.SaveCallback;
 
 @SuppressLint({ "SimpleDateFormat", "DefaultLocale" })
 public class EditEventActivity extends FragmentActivity implements
-		OnDateSetListener, TimePickedListener, LocationListener {
+		OnDateSetListener, TimePickedListener, LocationListener, DatePickedListener {
 
 	private static final String APPLICATION_ID = "rcJ9OjhbQUqRqos6EusNdnwGEYNC9d4a6rXdqAMU";
 	private static final String CLIENT_KEY = "3SRkJuZREKUG3bwvMsjYXOsPXqSdzONx6MzaXWAH";
