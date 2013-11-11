@@ -37,9 +37,9 @@
 	    android:id="@+id/lvItems"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
-	    android:clipToPadding="false"
+	    android:clipToPadding="true"
 	    android:divider="@null"
-	    android:dividerHeight="5dp"
-	    android:padding="10dp" />
+	    android:dividerHeight="2dp"
+	    android:padding="4dp" />
 
 </LinearLayout>
