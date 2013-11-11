@@ -74,7 +74,7 @@
         
           <activity
             android:name="com.hubdub.meetr.activities.ImageDisplayActivity"
-            android:label="Image Display">
+            android:label="">
         </activity>
             
 

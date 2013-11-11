@@ -1,8 +1,10 @@
 package com.hubdub.meetr.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.hubdub.meetr.R;
@@ -15,6 +17,9 @@ public class ImageDisplayActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_image_display);
+        final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+
 		
 		 // get intent data
         Intent i = getIntent();
@@ -28,6 +33,15 @@ public class ImageDisplayActivity extends Activity {
 		imageLoader.init(config);
 		imageLoader.displayImage(url, ivImage);
 	}
-	       
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();  //This should be compatible with API 5+
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 	     
 }

@@ -23,6 +23,7 @@
 
     <style name="Theme.Meetr.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">#5D79B4</item>
+        <item name="android:height">40dp</item>
         <item name="android:titleTextStyle">@style/Theme.Meetr.ActionBar.TitleTextStyle</item>
     </style>
     

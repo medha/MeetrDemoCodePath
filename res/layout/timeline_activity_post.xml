@@ -2,11 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingRight="16dp"
-        android:background="@drawable/card_background_white"
     android:orientation="vertical"
-    android:padding="16dp" >
-
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+    
      <ImageView
             android:id="@+id/ivFriends"
             android:layout_width="25dp"
@@ -35,6 +34,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#575757"
             android:textSize="13sp"
+            android:background="@drawable/bubble_yellow"
             android:textStyle="bold" />
 
                 <com.parse.ParseImageView
@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/eventPost"
                     android:layout_below="@+id/ivFriends"
+					android:background="@drawable/bubble_yellow"
                     android:src="@drawable/transperent_color" />
 
 </RelativeLayout>
