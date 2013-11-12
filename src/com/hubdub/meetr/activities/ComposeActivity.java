@@ -295,6 +295,23 @@ public class ComposeActivity extends FragmentActivity implements
 			event.setLocation(btLocation.getText().toString());
 			event.setGuestList(guestListArray);
 			event.setCurrentUser(currentUser);
+			JSONArray guestList = event.getGuestList();
+			for(int j=0; j<guestList.length(); j++) {
+				/* Get facebook id for each guest */
+				JSONObject guest;
+				try {
+					guest = (JSONObject) guestList.get(j);
+					String fbId = (String) guest.get("id");
+					String fbName = (String) guest.get("name");
+					fbGuestList.add(fbId);
+					fbGuestList.add(ParseUser.getCurrentUser().getJSONObject("profile").getString("facebookId"));
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			fbGuestList = new ArrayList<String>(new HashSet<String>(fbGuestList));
+			event.setFbGuestList(fbGuestList);
 			event.saveInBackground(new SaveCallback() {
 				@Override
 				public void done(ParseException e) {
@@ -303,7 +320,7 @@ public class ComposeActivity extends FragmentActivity implements
 					
 					// Instead of going back to the EventListActivity, we are going to
 					// start a new activity that shows the newly created event
-					Intent i = new Intent(ComposeActivity.this,
+					final Intent i = new Intent(ComposeActivity.this,
 							EventDetailActivity.class);
 
 					// Additional information being sent across
@@ -330,7 +347,6 @@ public class ComposeActivity extends FragmentActivity implements
 							JSONObject guest = (JSONObject) guestList.get(j);
 							String fbId = (String) guest.get("id");
 							String fbName = (String) guest.get("name");
-							fbGuestList.add(fbId);
 							
 							/* Craft the push notification */
 							JSONObject data = new JSONObject ();
@@ -339,7 +355,7 @@ public class ComposeActivity extends FragmentActivity implements
 							data.put("eventId", eventId);
 							/* Get the user name from current user */
 							JSONObject userName = (JSONObject) currentUser.getJSONObject("profile");
-							data.put("alert", userName.get("name") + "has invited you to " + eventName);
+							data.put("alert", userName.get("name") + " has invited you to " + eventName);
 							
 							/* Find the guests from our list and send out a push notification to each */
 							ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
@@ -347,7 +363,13 @@ public class ComposeActivity extends FragmentActivity implements
 							ParsePush push = new ParsePush();
 							push.setQuery(pushQuery);
 							push.setData(data);
-							push.sendInBackground();
+							try {
+								push.send();
+							} catch (ParseException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							//push.sendInBackground();
 														
 						} catch (JSONException e1) {
 							// TODO Auto-generated catch block
@@ -355,26 +377,14 @@ public class ComposeActivity extends FragmentActivity implements
 						}
 					}
 					
-					try {
-						fbGuestList.add(ParseUser.getCurrentUser().getJSONObject("profile").getString("facebookId"));
-					} catch (JSONException e1) {
-							e1.printStackTrace();
-					}
-					
-					fbGuestList = new ArrayList<String>(new HashSet<String>(fbGuestList));
-					event.setFbGuestList(fbGuestList);
-					event.saveEventually();
-					
 					startActivity(i);
-					// Need to close this activity and head back out.
 					mEventNameInput.setText("");
 					/* reset the global variable */
 					MeetrApplication application = (MeetrApplication) getApplication();
 					application.setSelectedUsers(null);
-					finish();
+					finish();		
 				}
 			});
-			Log.d("DEBUG", "about to save event");
 		}
 	}
 
@@ -435,7 +445,6 @@ public class ComposeActivity extends FragmentActivity implements
 		// We just store our selection in the Application for other activities
 		// to look at.
 		onEventCreateAction(this.getCurrentFocus());
-		finish();
 	}
 
 	public void onPickLocationButtonSelected(View v) {

@@ -181,6 +181,44 @@ public class EventListActivity extends Activity {
 		query.orderByDescending("createdAt");
 		return query;
 	}
+	
+	
+	private ParseQuery<Events> fetchLastEventItem() {
+		String fbId = "";
+		// Here we can configure a ParseQuery to our heart's desire.
+		try {
+			fbId = ParseUser.getCurrentUser().getJSONObject("profile")
+					.getString("facebookId");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*
+		 * Doing a join query here. Requesting all rows where the event is
+		 * created by this user and also where this user is an invited guest.
+		 */
+		ParseQuery<Events> queryObjId = new ParseQuery<Events>("Events");
+		queryObjId.whereEqualTo("User", ParseUser.getCurrentUser());
+		//queryObjId.whereGreaterThanOrEqualTo("EventDate", Calendar.getInstance().getTime());
+		
+		
+		ParseQuery<Events> queryFbId = new ParseQuery<Events>("Events");
+		queryFbId.whereEqualTo("FbGuestList", fbId);
+		//queryFbId.whereGreaterThanOrEqualTo("EventDate", Calendar.getInstance().getTime());
+		
+		List<ParseQuery<Events>> queries = new ArrayList<ParseQuery<Events>>();
+		queries.add(queryObjId);
+		queries.add(queryFbId);
+		
+		ParseQuery<Events> query = new ParseQuery<Events>("Events");
+		query = ParseQuery.or(queries);
+		query.orderByDescending("createdAt");
+		/* hack for demo day */
+		query.setLimit(1);
+		return query;
+	}
+	
+	
 
 	/*
 	 * Helper Function for the adapter
@@ -232,6 +270,25 @@ public class EventListActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+//		List<Events> events = null;
+//		ParseQuery<Events> query = fetchLastEventItem();
+//
+//		try {
+//			events = query.find();
+//			adapter = new CustomArrayAdapter(this, new ArrayList<Events>());
+//		} catch (ParseException e) {
+//			Log.d("ERROR", e.toString());
+//			adapter = new CustomArrayAdapter(this, new ArrayList<Events>());
+//		}
+//		adapter.addAll(events);
+//		listView.setAdapter(adapter);
+//		adapter.notifyDataSetChanged();
+
 	}
 
 }
