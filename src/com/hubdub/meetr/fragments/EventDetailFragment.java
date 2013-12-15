@@ -1,8 +1,7 @@
 package com.hubdub.meetr.fragments;
 
-import java.io.FileNotFoundException;
-
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -79,13 +79,23 @@ public class EventDetailFragment extends Fragment {
 		guestList = i.getStringExtra("GuestList");
 		location = i.getStringExtra("Location");
 		if (location != null) {
-			String locationQuery = location.replace("\n", "+")
+			final String locationQuery = location.replace("\n", "+")
 					.replace(" ", "+").replace(",", "+");
 			String url = "http://maps.googleapis.com/maps/api/staticmap?center="
 					+ locationQuery
 					+ "zoom=13&size=400x120&maptype=roadmap&markers=color:red%7Caddress="
 					+ locationQuery + "%7C&sensor=false";
 			ivEventImage.setVisibility(View.VISIBLE);
+			ivEventImage.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+					Uri.parse("geo:0,0?q=" + locationQuery));
+					startActivity(intent);
+				}
+			});
 
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 					getActivity()).build();
