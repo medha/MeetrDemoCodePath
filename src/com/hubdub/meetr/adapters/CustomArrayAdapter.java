@@ -74,8 +74,6 @@ public class CustomArrayAdapter extends com.haarman.listviewanimations.ArrayAdap
 		String gList = "";
 		JSONObject data;
 		String url = "";
-		int width;
-		int height;
 		
 		int length = guestList.length();
 		

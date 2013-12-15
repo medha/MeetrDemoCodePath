@@ -66,7 +66,7 @@
             android:layout_toLeftOf="@+id/tvLocation"
             android:src="@drawable/friend" />
 
-        <ImageView
+        <com.hubdub.meetr.adapters.CircularImageView
             android:id="@+id/ivFriendsProfile1"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -74,7 +74,7 @@
             android:layout_toRightOf="@+id/ivFriends"
             android:layout_marginLeft="3dp" />
 
-         <ImageView
+        <com.hubdub.meetr.adapters.CircularImageView
              android:id="@+id/ivFriendsProfile2"
              android:layout_width="30dp"
              android:layout_height="30dp"
@@ -82,7 +82,7 @@
              android:layout_alignTop="@+id/ivFriendsProfile1"
              android:layout_marginLeft="3dp" />
          
-          <ImageView
+          <com.hubdub.meetr.adapters.CircularImageView
              android:id="@+id/ivFriendsProfile3"
              android:layout_width="30dp"
              android:layout_height="30dp"
@@ -90,7 +90,7 @@
              android:layout_alignTop="@+id/ivFriendsProfile2"
              android:layout_marginLeft="3dp" />
           
-          <ImageView
+          <com.hubdub.meetr.adapters.CircularImageView
              android:id="@+id/ivFriendsProfile4"
              android:layout_width="30dp"
              android:layout_height="30dp"
@@ -98,7 +98,7 @@
              android:layout_alignTop="@+id/ivFriendsProfile3"
              android:layout_marginLeft="3dp" />
           
-          <ImageView
+          <com.hubdub.meetr.adapters.CircularImageView
              android:id="@+id/ivFriendsProfile5"
              android:layout_width="30dp"
              android:layout_height="30dp"

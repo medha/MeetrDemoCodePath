@@ -1,4 +1,4 @@
-package com.hubdub.meetr.adapters;
+ package com.hubdub.meetr.adapters;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
